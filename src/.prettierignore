@@ -3,3 +3,4 @@ yarn.lock
 README.md
 .vscode/*
 node_modules
+tsconfig.json
