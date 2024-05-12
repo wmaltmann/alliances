@@ -1,10 +1,10 @@
-import React from 'react';
+import { FC } from 'react';
+import TopBar from '../components/TopBar';
 
-const HomePage = () => {
+const HomePage:FC = () => {
   return (
     <div>
-      <h2>Home Page</h2>
-      {/* Add your home page content here */}
+      <TopBar/>
     </div>
   );
 };
