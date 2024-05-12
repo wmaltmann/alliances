@@ -1,12 +1,11 @@
-import React from 'react';
+import { Typography } from "@mui/material";
 
 const LoginPage = () => {
-  return (
-    <div>
-      <h2>Login Page</h2>
-      {/* Add your login form here */}
-    </div>
-  );
+	return (
+		<>
+			<Typography>test</Typography>
+		</>
+	);
 };
 
 export default LoginPage;

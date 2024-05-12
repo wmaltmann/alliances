@@ -1,23 +1,23 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
-import { Auth, User } from '../model/user/authModel';
+import React, { createContext, useState, useContext, ReactNode } from "react";
+import { Auth, User } from "../model/user/authModel";
 
 interface AppContextData {
-  auth: Auth
+	auth: Auth;
 }
 
 const AppContext = createContext<AppContextData | undefined>(undefined);
 
-export const AppContextProvider: React.FC<{children : ReactNode}> = ({ children }) => {
-    const [user, setUser] = useState<User | undefined>(undefined);
+export const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+	const [user, setUser] = useState<User | undefined>(undefined);
 
-    const contextValue: AppContextData = {
-        auth: {
-            user,
-            setUser,
-        }
-  };
+	const contextValue: AppContextData = {
+		auth: {
+			user,
+			setUser,
+		},
+	};
 
-  return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;
+	return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;
 };
 
 export const useAppContext = () => {
