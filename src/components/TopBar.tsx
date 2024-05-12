@@ -1,9 +1,5 @@
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
+import { Menu } from "@mui/icons-material";
+import { AppBar, IconButton, Toolbar, Typography } from "@mui/material";
 import { FC } from "react";
 
 const TopBar: FC = () => {
@@ -17,12 +13,9 @@ const TopBar: FC = () => {
 					aria-label="menu"
 					sx={{ mr: 2 }}
 				>
-					<MenuIcon />
+					<Menu />
 				</IconButton>
-				<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-					News
-				</Typography>
-				<Button color="inherit">Login</Button>
+				<Typography variant="h1">Alliance Selector</Typography>
 			</Toolbar>
 		</AppBar>
 	);

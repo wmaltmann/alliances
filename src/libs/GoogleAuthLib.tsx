@@ -1,19 +1,25 @@
+import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
 import React from "react";
-import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from "react-google-login";
 
 const GoogleAuth: React.FC = () => {
-	const responseGoogle = (response: GoogleLoginResponse | GoogleLoginResponseOffline) => {
-		console.log(response);
-		// Handle authentication response here
+	const handleSuccess = (credentialResponse: CredentialResponse) => {
+		if (credentialResponse.credential) {
+			const userData = jwtDecode(credentialResponse.credential);
+			console.log(userData);
+		}
+	};
+
+	const handleError = () => {
+		console.log("Login Failed");
 	};
 
 	return (
 		<GoogleLogin
-			clientId="YOUR_CLIENT_ID"
-			buttonText="Login with Google"
-			onSuccess={responseGoogle}
-			onFailure={responseGoogle}
-			cookiePolicy={"single_host_origin"}
+			onSuccess={handleSuccess}
+			onError={handleError}
+			auto_select={false}
+			nonce="test"
 		/>
 	);
 };

@@ -1,9 +1,11 @@
-import { Typography } from "@mui/material";
+import TopBar from "../components/TopBar";
+import GoogleAuth from "../libs/GoogleAuthLib";
 
 const LoginPage = () => {
 	return (
 		<>
-			<Typography>test</Typography>
+			<TopBar />
+			<GoogleAuth />
 		</>
 	);
 };
