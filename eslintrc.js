@@ -16,6 +16,12 @@ module.exports = {
         sourceType: 'module',
         project: './tsconfig.json'
     },
+    settings: {
+        react: {
+          pragma: "React",
+          version: "detect"
+        }
+      },
     plugins: ['@typescript-eslint', 'prettier'],
     rules: {
         'prettier/prettier': 'error',
