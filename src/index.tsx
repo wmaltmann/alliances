@@ -2,8 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./app/App";
 import { AppContextProvider } from "./app/AppContext";
+import * as serviceWorkerRegistration from "./app/serviceWorkerRegistration";
 import "./index.css";
-import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(
