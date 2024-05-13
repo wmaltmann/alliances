@@ -1,4 +1,3 @@
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./app/App";
@@ -8,13 +7,11 @@ import "./index.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(
-	<GoogleOAuthProvider clientId="837286351398-mfao186rjimfj94783u34bu0ubnuuf63.apps.googleusercontent.com">
-		<React.StrictMode>
-			<AppContextProvider>
-				<App />
-			</AppContextProvider>
-		</React.StrictMode>
-	</GoogleOAuthProvider>,
+	<React.StrictMode>
+		<AppContextProvider>
+			<App />
+		</AppContextProvider>
+	</React.StrictMode>,
 );
 
 // If you want your app to work offline and load faster, you can change
