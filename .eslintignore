@@ -1,6 +1,0 @@
-node_modules
-.serverless
-.webpack
-_warmup
-.vscode
-tsconfig.json
