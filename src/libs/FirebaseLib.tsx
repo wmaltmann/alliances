@@ -3,13 +3,13 @@ import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 
 const firebaseConfig = {
-	apiKey: "AIzaSyBPabAtmvvq-vhzbZuRyZLueVxelaAXbS8",
-	authDomain: "alliance-selector.firebaseapp.com",
-	databaseURL: "https://alliance-selector-default-rtdb.firebaseio.com",
-	projectId: "alliance-selector",
-	storageBucket: "alliance-selector.appspot.com",
-	messagingSenderId: "678497864213",
-	appId: "1:678497864213:web:81519bb5e99b0b105d5c1c",
+	apiKey: "AIzaSyDhHO7NY6zq87AG0QHdcDmJss8hNmZjSfo",
+	authDomain: "alliance-selector-d9518.firebaseapp.com",
+	databaseURL: "https://alliance-selector-d9518-default-rtdb.firebaseio.com",
+	projectId: "alliance-selector-d9518",
+	storageBucket: "alliance-selector-d9518.appspot.com",
+	messagingSenderId: "255656016827",
+	appId: "1:255656016827:web:0fdb8d06d491667c87a29e",
 };
 
 const app = initializeApp(firebaseConfig);
