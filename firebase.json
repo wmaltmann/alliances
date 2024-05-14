@@ -1,7 +1,16 @@
 {
-	"hosting": {
-		"public": "build",
-		"ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-		"site": "allianceselector"
-	}
+	"hosting": [
+		{
+			"public": "build",
+			"target": "prod-version",
+			"ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+			"site": "allianceselector"
+		},
+		{
+			"public": "build",
+			"target": "beta-version",
+			"ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+			"site": "beta-allianceselector"
+		}
+	]
 }
