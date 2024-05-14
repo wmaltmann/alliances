@@ -33,5 +33,5 @@ jobs:
                   repoToken: ${{ secrets.GITHUB_TOKEN }}
                   firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_ALLIANCE_SELECTOR_D9518 }}
                   channelId: live
-                  target: beta-version
+                  target: beta
                   projectId: alliance-selector-d9518
