@@ -1,5 +1,6 @@
-import React, { createContext, useState, useContext, ReactNode } from "react";
-import { Auth, User } from "../model/user/authModel";
+import { User } from "firebase/auth";
+import React, { ReactNode, createContext, useContext, useState } from "react";
+import { Auth } from "../model/user/authModel";
 
 interface AppContextData {
 	auth: Auth;

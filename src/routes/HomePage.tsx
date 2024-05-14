@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
+import Page from "../components/page/Page";
 import { auth } from "../libs/FirebaseLib";
 
 const HomePage: FC = () => {
@@ -31,18 +32,21 @@ const HomePage: FC = () => {
 			</div>
 		</>
 	);
-	const LoginButton = () => (
-		<button className="btn btn-primary btn-md" onClick={() => navigate("/login")}>
-			LOGIN
-		</button>
-	);
 	if (loading) {
 		return <div>Loading...</div>;
 	}
 	if (error) {
 		return <div>Error: {error.message}</div>;
 	}
-	return <div className="box">{user ? <UserContent /> : <LoginButton />}</div>;
+	return (
+		<div className="box">
+			{
+				<Page>
+					<UserContent />
+				</Page>
+			}
+		</div>
+	);
 };
 
 export default HomePage;

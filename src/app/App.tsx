@@ -1,21 +1,27 @@
 import { ThemeProvider } from "@mui/material";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { auth } from "../libs/FirebaseLib";
 import HomePage from "../routes/HomePage";
 import LoginPage from "../routes/LoginPage";
-import { useAppContext } from "./AppContext";
+import WelcomePage from "../routes/WelcomePage";
 import { themeLight } from "./theme";
+
 function App() {
-	const appContext = useAppContext();
+	const [user, loading, error] = useAuthState(auth);
+	console.log("U:", user, "L", loading, "E", error);
 	return (
 		<ThemeProvider theme={themeLight}>
 			<Router>
 				<Routes>
-					{appContext.auth === undefined ? (
-						<Route path="*" element={<LoginPage />} />
+					{user ? (
+						<>
+							<Route path="*" element={<HomePage />} />
+						</>
 					) : (
 						<>
 							<Route path="/login" element={<LoginPage />} />
-							<Route path="*" element={<HomePage />} />
+							<Route path="*" element={<WelcomePage />} />
 						</>
 					)}
 				</Routes>

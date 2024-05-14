@@ -2,10 +2,13 @@ import { isSignInWithEmailLink, sendSignInLinkToEmail, signInWithEmailLink } fro
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useLocation, useNavigate } from "react-router-dom";
-import { auth } from "../libs/FirebaseLib";
+import { useAppContext } from "../app/AppContext";
+import Page from "../components/page/Page";
+import { auth as fbAuth } from "../libs/FirebaseLib";
 
 export const LoginPage = () => {
-	const [user] = useAuthState(auth);
+	const { auth } = useAppContext();
+	const [user] = useAuthState(fbAuth);
 	const navigate = useNavigate();
 	const { search } = useLocation();
 	const [userEmail, setUserEmail] = useState("");
@@ -15,17 +18,23 @@ export const LoginPage = () => {
 	useEffect(() => {
 		const authenticateUser = async () => {
 			if (user) {
+				auth.setUser(user);
 				navigate("/");
 				return;
 			}
-			if (isSignInWithEmailLink(auth, window.location.href)) {
+			if (isSignInWithEmailLink(fbAuth, window.location.href)) {
 				let emailFromStorage = localStorage.getItem("email");
 				if (!emailFromStorage) {
 					emailFromStorage = window.prompt("Please provide your email");
 				}
 				setIsLoading(true);
 				try {
-					await signInWithEmailLink(auth, emailFromStorage!, window.location.href);
+					const out = await signInWithEmailLink(
+						fbAuth,
+						emailFromStorage!,
+						window.location.href,
+					);
+					console.log("out", out);
 					localStorage.removeItem("email");
 					navigate("/");
 				} catch (error) {
@@ -42,7 +51,7 @@ export const LoginPage = () => {
 		event.preventDefault();
 		setIsLoading(true);
 		try {
-			await sendSignInLinkToEmail(auth, userEmail, {
+			await sendSignInLinkToEmail(fbAuth, userEmail, {
 				url: "http://localhost:3000/login",
 				handleCodeInApp: true,
 			});
@@ -75,7 +84,17 @@ export const LoginPage = () => {
 	if (isLoading) {
 		return <div>Loading...</div>;
 	}
-	return <div className="box">{user ? <div>Please wait...</div> : <LoginForm />}</div>;
+	return (
+		<div className="box">
+			{user ? (
+				<div>Please wait...</div>
+			) : (
+				<Page>
+					<LoginForm />
+				</Page>
+			)}
+		</div>
+	);
 };
 /* <TopBar />
 			<AppContainer>
