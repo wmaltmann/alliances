@@ -1,16 +1,7 @@
 {
-  "projects": {
-    "default": "alliance-selector-beta"
-  },
-  "targets": {
-    "alliance-selector-d9518": {
-      "hosting": {
-        "beta": [
-          "beta-allianceselector"
-        ]
-      }
-    }
-  },
-  "etags": {},
-  "dataconnectEmulatorConfig": {}
+	"projects": {
+		"default": "alliance-selector-beta",
+		"prod": "alliance-selector-d9518",
+		"beta": "alliance-selector-beta"
+	}
 }
