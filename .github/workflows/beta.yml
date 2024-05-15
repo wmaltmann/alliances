@@ -31,7 +31,5 @@ jobs:
             - uses: FirebaseExtended/action-hosting-deploy@v0
               with:
                   repoToken: ${{ secrets.GITHUB_TOKEN }}
-                  firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_ALLIANCE_SELECTOR_D9518 }}
-                  channelId: live
-                  target: beta
-                  projectId: alliance-selector-d9518
+                  firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_ALLIANCE_SELECTOR_BETA }}
+                  projectId: alliance-selector-beta
