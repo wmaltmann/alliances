@@ -4,6 +4,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppContext } from "../app/AppContext";
 import Page from "../components/page/Page";
+import BorderBox from "../components/page/common/BorderBox";
 import { auth as fbAuth } from "../libs/FirebaseLib";
 
 export const LoginPage = () => {
@@ -90,7 +91,9 @@ export const LoginPage = () => {
 				<div>Please wait...</div>
 			) : (
 				<Page>
-					<LoginForm />
+					<BorderBox>
+						<LoginForm />
+					</BorderBox>
 				</Page>
 			)}
 		</div>
