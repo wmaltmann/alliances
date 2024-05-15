@@ -22,5 +22,5 @@ Build: npm run build
 Deploy alliance-selector-beta: Merge changes into beta branch
 Deploy alliance-selector: Merge changes into prod branch
 
-As of 5/14/24 Beta URL is https://alliance-selector-beta.web.app/
-As of 5/14/24 Prod URL is https://allianceselector.firebaseapp.com/
+As of 5/14/24 Beta URL is https://alliances-beta.web.app/
+As of 5/14/24 Prod URL is https://alliances.web.app/
