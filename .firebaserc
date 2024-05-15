@@ -1,15 +1,21 @@
 {
   "projects": {
-    "default": "alliance-selector-d9518"
+    "default": "alliance-selector-beta",
+    "prod": "alliance-selector-d9518",
+    "beta": "alliance-selector-beta"
   },
   "targets": {
-    "alliance-selector-d9518": {
+    "alliance-selector-beta": {
+      "hosting": {
+        "beta": [
+          "alliance-selector-beta"
+        ]
+      }
+    },
+    "alliance-selector": {
       "hosting": {
         "prod": [
           "allianceselector"
-        ],
-        "beta": [
-          "beta-allianceselector"
         ]
       }
     }
