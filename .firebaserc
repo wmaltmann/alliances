@@ -1,5 +1,7 @@
 {
-  "projects": {
-    "default": "alliance-selector-d9518"
-  }
+	"projects": {
+		"default": "alliance-selector-beta",
+		"prod": "alliance-selector-d9518",
+		"beta": "alliance-selector-beta"
+	}
 }
