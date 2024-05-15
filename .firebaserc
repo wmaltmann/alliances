@@ -1,25 +1,25 @@
 {
-  "projects": {
-    "default": "alliance-selector-beta",
-    "prod": "alliance-selector-d9518",
-    "beta": "alliance-selector-beta"
-  },
-  "targets": {
-    "alliance-selector-beta": {
-      "hosting": {
-        "beta": [
-          "alliance-selector-beta"
-        ]
-      }
-    },
-    "alliance-selector": {
-      "hosting": {
-        "prod": [
-          "allianceselector"
-        ]
-      }
-    }
-  },
-  "etags": {},
-  "dataconnectEmulatorConfig": {}
+	"projects": {
+		"default": "alliance-selector-beta",
+		"prod": "alliance-selector-d9518",
+		"beta": "alliance-selector-beta"
+	},
+	"targets": {
+		"alliance-selector-beta": {
+			"hosting": {
+				"beta": [
+					"alliance-selector-beta"
+				]
+			}
+		},
+		"alliance-selector-d9518": {
+			"hosting": {
+				"prod": [
+					"alliances"
+				]
+			}
+		}
+	},
+	"etags": {},
+	"dataconnectEmulatorConfig": {}
 }
