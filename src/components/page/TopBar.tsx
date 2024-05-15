@@ -5,12 +5,13 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../../app/AppContext";
 import { signOut } from "../../libs/AuthLib";
-import { auth as fbAuth } from "../../libs/FirebaseLib";
+import { auth as fbAuth, getAppStage } from "../../libs/FirebaseLib";
 
 const TopBar: FC = () => {
 	const [user] = useAuthState(fbAuth);
 	const { auth } = useAppContext();
 	const navigate = useNavigate();
+	const stage = getAppStage();
 
 	useEffect(() => {
 		if (user) {
@@ -39,7 +40,11 @@ const TopBar: FC = () => {
 					<Menu />
 				</IconButton>
 				<Typography variant="h1" component="div" sx={{ flexGrow: 1 }}>
-					Alliance Selector
+					{stage === "beta"
+						? "Alliance Selector Beta"
+						: stage === "local"
+							? "Alliance Selector Local"
+							: "Alliance Selector"}
 				</Typography>
 				{auth.user ? (
 					<>
