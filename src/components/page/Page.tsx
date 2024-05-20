@@ -8,7 +8,7 @@ type PageProps = {
 
 const Page: React.FC<PageProps> = ({ children }) => {
 	return (
-		<Box height="100%">
+		<Box height={`calc(100vh - 65px)`}>
 			<TopBar />
 			{children}
 		</Box>

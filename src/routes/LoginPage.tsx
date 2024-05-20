@@ -1,10 +1,14 @@
+import { Stack, Typography, useTheme } from "@mui/material";
 import { isSignInWithEmailLink, sendSignInLinkToEmail, signInWithEmailLink } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppContext } from "../app/AppContext";
 import Page from "../components/page/Page";
+import ASButton from "../components/page/common/ASButton";
+import ASTextField from "../components/page/common/ASTextField";
 import BorderBox from "../components/page/common/BorderBox";
+import Loading from "../components/page/common/Loading";
 import { auth as fbAuth } from "../libs/FirebaseLib";
 
 export const LoginPage = () => {
@@ -12,10 +16,9 @@ export const LoginPage = () => {
 	const [user] = useAuthState(fbAuth);
 	const navigate = useNavigate();
 	const { search } = useLocation();
-	const [userEmail, setUserEmail] = useState("");
-	const [isLoading, setIsLoading] = useState(false);
-	const [errorMessage, setErrorMessage] = useState("");
-	const [infoMessage, setInfoMessage] = useState("");
+	const [email, setEmail] = useState("");
+	const [state, setState] = useState<"loading" | "login" | "confirmation">("login");
+	const theme = useTheme();
 	useEffect(() => {
 		const authenticateUser = async () => {
 			if (user) {
@@ -28,7 +31,7 @@ export const LoginPage = () => {
 				if (!emailFromStorage) {
 					emailFromStorage = window.prompt("Please provide your email");
 				}
-				setIsLoading(true);
+				setState("loading");
 				try {
 					const out = await signInWithEmailLink(
 						fbAuth,
@@ -39,10 +42,10 @@ export const LoginPage = () => {
 					localStorage.removeItem("email");
 					navigate("/");
 				} catch (error) {
-					setErrorMessage((error as Error).message);
 					navigate("/login");
+					setState("login");
 				} finally {
-					setIsLoading(false);
+					setState("confirmation");
 				}
 			}
 		};
@@ -50,74 +53,67 @@ export const LoginPage = () => {
 	}, [user, search, navigate]);
 	const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		setIsLoading(true);
+		setState("loading");
 		try {
-			await sendSignInLinkToEmail(fbAuth, userEmail, {
+			await sendSignInLinkToEmail(fbAuth, email, {
 				url: "http://localhost:3000/login",
 				handleCodeInApp: true,
 			});
-			localStorage.setItem("email", userEmail);
-			setInfoMessage("We have sent you an email with a link to sign in");
+			localStorage.setItem("email", email);
 		} catch (error) {
-			setErrorMessage((error as Error).message);
+			console.log("error", error);
+			setState("login");
 		} finally {
-			setIsLoading(false);
+			setState("confirmation");
 		}
 	};
-	const LoginForm = () => (
-		<form className="form-group custom-form" onSubmit={handleLogin}>
-			<label>Email</label>
-			<input
-				type="email"
-				required
-				placeholder="Enter Email"
-				className="form-control"
-				value={userEmail}
-				onChange={(e) => setUserEmail(e.target.value)}
-			/>
-			<button type="submit" className="btn btn-success btn-md">
-				{isLoading ? "Logging you in" : "Login"}
-			</button>
-			{errorMessage && <div className="error-msg">{errorMessage}</div>}
-			{infoMessage && <div className="info-msg">{infoMessage}</div>}
-		</form>
-	);
-	if (isLoading) {
-		return <div>Loading...</div>;
-	}
+
+	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setEmail(event.target.value);
+	};
+
 	return (
-		<div className="box">
-			{user ? (
-				<div>Please wait...</div>
-			) : (
-				<Page>
-					<BorderBox>
-						<LoginForm />
+		<Page>
+			<Stack alignItems="center" justifyContent="center" height="100%">
+				{state === "loading" && <Loading />}
+				{state === "login" && (
+					<BorderBox width="300px">
+						<Stack
+							spacing={3}
+							component="form"
+							onSubmit={handleLogin}
+							alignItems="center"
+						>
+							<Typography variant="body1">Enter your email to Login</Typography>
+							<ASTextField
+								required
+								id="email"
+								label="Email"
+								type="email"
+								value={email}
+								onChange={handleChange}
+								fullWidth
+							/>
+							<ASButton type="submit" text="Submit" width="120px" />
+						</Stack>
 					</BorderBox>
-				</Page>
-			)}
-		</div>
+				)}
+				{state === "confirmation" && (
+					<BorderBox width="300px">
+						<Stack spacing={1} alignItems="center">
+							<Typography variant="body1">We sent a login link to:</Typography>
+							<Typography variant="body1" color={theme.palette.primary.main}>
+								{email}
+							</Typography>
+							<Typography variant="body1">
+								Click the link in the email to continue.
+							</Typography>
+						</Stack>
+					</BorderBox>
+				)}
+			</Stack>
+		</Page>
 	);
 };
-/* <TopBar />
-			<AppContainer>
-				<Stack alignItems="center" justifyContent="center" height="100%">
-					<Stack spacing={2} component="form" onSubmit={handleSubmit} width="300px">
-						<Typography variant="body1"> Enter email to continue</Typography>
-						<TextField
-							variant="standard"
-							required
-							id="email"
-							label="Email"
-							type="email"
-							value={email}
-							onChange={handleChange}
-						/>
-						<Button variant="contained" type="submit" color="primary">
-							Submit
-						</Button>
-					</Stack>
-				</Stack>
-			</AppContainer> */
 
 export default LoginPage;

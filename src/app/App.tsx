@@ -8,8 +8,7 @@ import WelcomePage from "../routes/WelcomePage";
 import { themeLight } from "./theme";
 
 function App() {
-	const [user, loading, error] = useAuthState(auth);
-	console.log("U:", user, "L", loading, "E", error);
+	const [user] = useAuthState(auth);
 	return (
 		<ThemeProvider theme={themeLight}>
 			<Router>
