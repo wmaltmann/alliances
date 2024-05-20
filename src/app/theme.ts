@@ -17,17 +17,23 @@ declare module "@mui/system" {
 
 declare module "@mui/material/styles" {
 	interface TypographyVariants {
-		error: React.CSSProperties;
+		error1: React.CSSProperties;
+		error2: React.CSSProperties;
+		body3: React.CSSProperties;
 	}
 
 	interface TypographyVariantsOptions {
-		error?: React.CSSProperties;
+		error1?: React.CSSProperties;
+		error2?: React.CSSProperties;
+		body3?: React.CSSProperties;
 	}
 }
 
 declare module "@mui/material/Typography" {
 	interface TypographyPropsVariantOverrides {
-		error: true;
+		error1: true;
+		error2: true;
+		body3: true;
 	}
 }
 
@@ -61,9 +67,24 @@ const typography: TypographyOptions = {
 		fontSize: 16,
 		fontWeight: "bold",
 	},
-	error: {
-		fontSize: 12,
+	error1: {
+		fontSize: 14,
+		fontFamily: "Poppins",
 		color: "#d32f2f",
+	},
+	error2: {
+		fontSize: 14,
+		fontFamily: "Poppins",
+		color: "#d32f2f",
+	},
+	body1: {
+		fontSize: 16,
+	},
+	body2: {
+		fontSize: 14,
+	},
+	body3: {
+		fontSize: 12,
 	},
 };
 

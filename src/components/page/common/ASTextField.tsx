@@ -1,4 +1,3 @@
-import { Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import React from "react";
 
@@ -10,7 +9,6 @@ interface EmailFieldProps {
 	required?: boolean;
 	type?: string;
 	fullWidth?: boolean;
-	error?: string;
 }
 
 const EmailField: React.FC<EmailFieldProps> = ({
@@ -20,7 +18,6 @@ const EmailField: React.FC<EmailFieldProps> = ({
 	value,
 	onChange,
 	fullWidth,
-	error,
 }) => {
 	return (
 		<>
@@ -34,7 +31,6 @@ const EmailField: React.FC<EmailFieldProps> = ({
 				onChange={onChange}
 				fullWidth={fullWidth}
 			/>
-			{error && <Typography variant="error">{error}</Typography>}
 		</>
 	);
 };

@@ -1,14 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database";
-
-export const getAppStage = () => {
-	return process.env.REACT_APP_STAGE === "local"
-		? "local"
-		: process.env.REACT_APP_STAGE === "beta"
-			? "beta"
-			: "prod";
-};
+import { getAppStage } from "../app/AppUtils";
 
 const DEV_CONFIG = {
 	apiKey: "AIzaSyADZYyWAe6YydGBcrTfoTgJNyoJoLBsVh4",

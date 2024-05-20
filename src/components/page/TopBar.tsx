@@ -4,8 +4,9 @@ import { FC, useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../../app/AppContext";
+import { getAppStage } from "../../app/AppUtils";
 import { signOut } from "../../libs/AuthLib";
-import { auth as fbAuth, getAppStage } from "../../libs/FirebaseLib";
+import { auth as fbAuth } from "../../libs/FirebaseLib";
 
 const TopBar: FC = () => {
 	const [user] = useAuthState(fbAuth);
