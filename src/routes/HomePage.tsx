@@ -1,19 +1,21 @@
 import { FC } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
+import { useAppContext } from "../app/AppContext";
 import Page from "../components/page/Page";
-import { auth } from "../libs/FirebaseLib";
+import { signOut } from "../libs/AuthLib";
+import { auth as fbAuth } from "../libs/FirebaseLib";
 
 const HomePage: FC = () => {
-	const [user, loading, error] = useAuthState(auth);
+	const [user, loading, error] = useAuthState(fbAuth);
+	const { auth } = useAppContext();
 	const navigate = useNavigate();
 	const handleLogout = async () => {
 		try {
-			await auth.signOut();
-			console.log("Successfully logged out");
+			await signOut(auth);
 			navigate("/");
-		} catch (err) {
-			console.error("Error logging out:", err);
+		} catch (error) {
+			console.error("Error logging out:", error);
 		}
 	};
 	const UserContent = () => (
