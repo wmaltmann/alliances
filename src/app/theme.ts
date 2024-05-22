@@ -15,6 +15,28 @@ declare module "@mui/system" {
 	}
 }
 
+declare module "@mui/material/styles" {
+	interface TypographyVariants {
+		error1: React.CSSProperties;
+		error2: React.CSSProperties;
+		body3: React.CSSProperties;
+	}
+
+	interface TypographyVariantsOptions {
+		error1?: React.CSSProperties;
+		error2?: React.CSSProperties;
+		body3?: React.CSSProperties;
+	}
+}
+
+declare module "@mui/material/Typography" {
+	interface TypographyPropsVariantOverrides {
+		error1: true;
+		error2: true;
+		body3: true;
+	}
+}
+
 const typography: TypographyOptions = {
 	fontFamily: "Poppins",
 	h1: {
@@ -45,6 +67,25 @@ const typography: TypographyOptions = {
 		fontSize: 16,
 		fontWeight: "bold",
 	},
+	error1: {
+		fontSize: 14,
+		fontFamily: "Poppins",
+		color: "#d32f2f",
+	},
+	error2: {
+		fontSize: 14,
+		fontFamily: "Poppins",
+		color: "#d32f2f",
+	},
+	body1: {
+		fontSize: 16,
+	},
+	body2: {
+		fontSize: 14,
+	},
+	body3: {
+		fontSize: 12,
+	},
 };
 
 export const themeLight = createTheme({
@@ -56,9 +97,9 @@ export const themeLight = createTheme({
 			main: "#358a00",
 		},
 		text: {
-			primary: "#ffffff",
-			secondary: "#ffffff",
-			disabled: "#ffffff",
+			primary: "#050505",
+			secondary: "#050505",
+			disabled: "#050505",
 		},
 	},
 	typography: typography,
@@ -79,9 +120,9 @@ export const themeDark = createTheme({
 			main: "#358a00",
 		},
 		text: {
-			primary: "#050505",
-			secondary: "#050505",
-			disabled: "#050505",
+			primary: "#ffffff",
+			secondary: "#ffffff",
+			disabled: "#ffffff",
 		},
 	},
 	typography: typography,

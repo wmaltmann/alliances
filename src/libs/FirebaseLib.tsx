@@ -1,10 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database";
-
-export const getAppStage = () => {
-	return process.env.REACT_APP_STAGE === "prod" ? "prod" : "dev";
-};
+import { getAppStage } from "../app/AppUtils";
 
 const DEV_CONFIG = {
 	apiKey: "AIzaSyADZYyWAe6YydGBcrTfoTgJNyoJoLBsVh4",
@@ -26,6 +23,6 @@ const PROD_CONFIG = {
 	appId: "1:255656016827:web:0fdb8d06d491667c87a29e",
 };
 
-const app = initializeApp(getAppStage() === "dev" ? DEV_CONFIG : PROD_CONFIG);
+const app = initializeApp(getAppStage() === "prod" ? PROD_CONFIG : DEV_CONFIG);
 export const db = getDatabase(app);
 export const auth = getAuth(app);
