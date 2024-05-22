@@ -31,7 +31,12 @@ const TopBar: FC = () => {
 	};
 
 	const handleLogoutClick = async () => {
-		await signOut(navigate, auth);
+		try {
+			await signOut(auth);
+			navigate("/");
+		} catch (error) {
+			console.error("Error logging out:", error);
+		}
 	};
 
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

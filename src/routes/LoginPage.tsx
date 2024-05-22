@@ -1,5 +1,4 @@
 import { Link, Stack, Typography, useTheme } from "@mui/material";
-import { isSignInWithEmailLink, signInWithEmailLink } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -9,12 +8,12 @@ import ASButton from "../components/page/common/ASButton";
 import ASTextField from "../components/page/common/ASTextField";
 import BorderBox from "../components/page/common/BorderBox";
 import Loading from "../components/page/common/Loading";
-import { PasswordlessLogin } from "../libs/AuthLib";
+import { autoLogin, getAuthEmail, passwordlessLogin } from "../libs/AuthLib";
 import { auth as fbAuth } from "../libs/FirebaseLib";
 
 export const LoginPage = () => {
-	const { auth } = useAppContext();
 	const [user] = useAuthState(fbAuth);
+	const { auth } = useAppContext();
 	const navigate = useNavigate();
 	const { search } = useLocation();
 	const [email, setEmail] = useState("");
@@ -23,37 +22,37 @@ export const LoginPage = () => {
 	const theme = useTheme();
 
 	useEffect(() => {
-		const authenticateUser = async () => {
-			if (user) {
-				auth.setUser(user);
-				navigate("/");
-				return;
-			}
-			if (isSignInWithEmailLink(fbAuth, window.location.href)) {
-				const emailFromStorage = localStorage.getItem("email");
-				if (!emailFromStorage) {
-					console.log("error");
-				}
-				setState("loading");
-				try {
-					await signInWithEmailLink(fbAuth, emailFromStorage!, window.location.href);
-					//localStorage.removeItem("email");
-					navigate("/");
-				} catch (error) {
-					console.log("error", error);
-					navigate("/login");
+		const authenticate = async () => {
+			setState("loading");
+			try {
+				const response = await autoLogin(user, auth);
+				if (response === "noLogin") {
 					setState("login");
+					console.log("AutoLogin bypass");
+				} else {
+					console.log("AutoLogin successful");
+					navigate("/");
 				}
+			} catch (error) {
+				if (email === "") {
+					const tempEmail = getAuthEmail();
+					if (tempEmail) {
+						setEmail(tempEmail);
+					}
+				}
+				setError((error as Error).message);
+				setState("error");
 			}
 		};
-		void authenticateUser();
+		void authenticate();
 	}, [user, search, navigate]);
 
 	const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		setState("loading");
 		try {
-			await PasswordlessLogin(email);
+			await passwordlessLogin(email);
+			setState("confirmation");
 		} catch (error) {
 			setError((error as Error).message);
 			setState("error");
