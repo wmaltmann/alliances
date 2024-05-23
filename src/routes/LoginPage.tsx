@@ -8,12 +8,12 @@ import ASButton from "../components/page/common/ASButton";
 import ASTextField from "../components/page/common/ASTextField";
 import BorderBox from "../components/page/common/BorderBox";
 import Loading from "../components/page/common/Loading";
-import { autoLogin, getAuthEmail, passwordlessLogin } from "../libs/AuthLib";
-import { auth as fbAuth } from "../libs/FirebaseLib";
+import { getAuthEmail, loginWithLink, passwordlessLogin } from "../libs/AuthLib";
+import { fbAuth } from "../libs/FirebaseLib";
 
 export const LoginPage = () => {
 	const [user] = useAuthState(fbAuth);
-	const { auth } = useAppContext();
+	const appContextData = useAppContext();
 	const navigate = useNavigate();
 	const { search } = useLocation();
 	const [email, setEmail] = useState("");
@@ -25,13 +25,11 @@ export const LoginPage = () => {
 		const authenticate = async () => {
 			setState("loading");
 			try {
-				const response = await autoLogin(user, auth);
-				if (response === "noLogin") {
-					setState("login");
-					console.log("AutoLogin bypass");
-				} else {
-					console.log("AutoLogin successful");
+				const response = await loginWithLink(user, appContextData);
+				if (response) {
 					navigate("/");
+				} else {
+					setState("login");
 				}
 			} catch (error) {
 				if (email === "") {

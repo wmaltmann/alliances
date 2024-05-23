@@ -4,15 +4,17 @@ import {
 	sendSignInLinkToEmail,
 	signInWithEmailLink,
 } from "firebase/auth";
+import { AppContextData } from "../app/AppContext";
 import { getAppBaseUrl } from "../app/AppUtils";
-import { auth as fbAuth } from "../libs/FirebaseLib";
-import { Auth } from "../model/user/authModel";
+import { fbAuth } from "../libs/FirebaseLib";
+import { loadOrCreateUser } from "../model/user/user.Manager";
 
-export const signOut = async (auth: Auth) => {
+export const signOut = async (appContext: AppContextData) => {
 	try {
 		await fbAuth.signOut();
-		auth.setUser(undefined);
-		console.log("Successfully logged out");
+		appContext.auth.setFbUser(undefined);
+		appContext.setUser(undefined);
+		console.log("Successful logout");
 	} catch (err) {
 		console.error("Error logging out:", err);
 	}
@@ -45,24 +47,40 @@ const processFirebaseAuthError = (error: Error) => {
 	}
 };
 
-export const autoLogin = async (user: User | null | undefined, auth: Auth) => {
+export const autoLogin = async (user: User | null | undefined, appContext: AppContextData) => {
 	if (user) {
-		auth.setUser(user);
-		return "success";
+		appContext.auth.setFbUser(user);
+		const newUser = await loadOrCreateUser(user);
+		appContext.setUser(newUser);
+		console.log("Successful auto login");
+		return true;
 	}
+	console.log("Unsuccessful auto login");
+	return false;
+};
+
+export const loginWithLink = async (user: User | null | undefined, appContext: AppContextData) => {
 	if (isSignInWithEmailLink(fbAuth, window.location.href)) {
 		try {
 			const emailFromStorage = localStorage.getItem("email");
 			if (!emailFromStorage) {
 				throw new Error("Missing cached email");
 			}
-			await signInWithEmailLink(fbAuth, emailFromStorage!, window.location.href);
-			return {};
+			const response = await signInWithEmailLink(
+				fbAuth,
+				emailFromStorage!,
+				window.location.href,
+			);
+			const newUser = await loadOrCreateUser(response.user);
+			appContext.setUser(newUser);
+			console.log("Successful link login");
+			return true;
 		} catch (error) {
 			throw new Error(processFirebaseAuthError(error as Error));
 		}
 	}
-	return "noLogin";
+	console.log("No login link");
+	return false;
 };
 
 export const getAuthEmail = () => {
