@@ -1,21 +1,37 @@
 import { ThemeProvider } from "@mui/material";
+import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { auth } from "../libs/FirebaseLib";
+import { autoLogin } from "../libs/AuthLib";
+import { fbAuth } from "../libs/FirebaseLib";
 import AboutPage from "../routes/AboutPage";
 import HomePage from "../routes/HomePage";
 import LoginPage from "../routes/LoginPage";
 import ProfilePage from "../routes/ProfilePage";
 import WelcomePage from "../routes/WelcomePage";
+import { useAppContext } from "./AppContext";
 import { themeLight } from "./theme";
 
 function App() {
-	const [user] = useAuthState(auth);
+	const appContextData = useAppContext();
+	const [user] = useAuthState(fbAuth);
+
+	useEffect(() => {
+		const authenticate = async () => {
+			try {
+				await autoLogin(user, appContextData);
+			} catch (error) {
+				// Do nothing
+			}
+		};
+		void authenticate();
+	}, [user]);
+
 	return (
 		<ThemeProvider theme={themeLight}>
 			<Router>
 				<Routes>
-					{user ? (
+					{appContextData.user ? (
 						<>
 							<Route path="/about" element={<AboutPage />} />
 							<Route path="/profile" element={<ProfilePage />} />

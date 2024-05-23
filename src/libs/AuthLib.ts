@@ -2,17 +2,20 @@ import {
 	User,
 	isSignInWithEmailLink,
 	sendSignInLinkToEmail,
+	signInWithEmailAndPassword,
 	signInWithEmailLink,
 } from "firebase/auth";
+import { AppContextData } from "../app/AppContext";
 import { getAppBaseUrl } from "../app/AppUtils";
-import { auth as fbAuth } from "../libs/FirebaseLib";
-import { Auth } from "../model/user/authModel";
+import { fbAuth } from "../libs/FirebaseLib";
+import { loadOrCreateUser } from "../model/user/user.Manager";
 
-export const signOut = async (auth: Auth) => {
+export const signOut = async (appContext: AppContextData) => {
 	try {
 		await fbAuth.signOut();
-		auth.setUser(undefined);
-		console.log("Successfully logged out");
+		appContext.auth.setFbUser(undefined);
+		appContext.setUser(undefined);
+		console.log("Successful logout");
 	} catch (err) {
 		console.error("Error logging out:", err);
 	}
@@ -40,29 +43,65 @@ const processFirebaseAuthError = (error: Error) => {
 			return "Your login link is invalid. Return to the login page to reenter your email and generate a new link.";
 		case "Missing cached email":
 			return "The email used to login in was not generated from this device. Return to the login page to reenter your email and generate a new link.";
+		case "Firebase: Error (auth/invalid-credential).":
+			return "Incorrect email or password";
+		case "Firebase: Exceeded daily quota for email sign-in. (auth/quota-exceeded).":
+			return "Passwordless login failed. Login using your password.";
 		default:
 			return "Unknown Error: " + error.message;
 	}
 };
 
-export const autoLogin = async (user: User | null | undefined, auth: Auth) => {
+export const autoLogin = async (user: User | null | undefined, appContext: AppContextData) => {
 	if (user) {
-		auth.setUser(user);
-		return "success";
+		appContext.auth.setFbUser(user);
+		const newUser = await loadOrCreateUser(user);
+		appContext.setUser(newUser);
+		console.log("Successful auto login");
+		return true;
 	}
+	console.log("Unsuccessful auto login");
+	return false;
+};
+
+export const loginWithLink = async (appContext: AppContextData) => {
 	if (isSignInWithEmailLink(fbAuth, window.location.href)) {
 		try {
 			const emailFromStorage = localStorage.getItem("email");
 			if (!emailFromStorage) {
 				throw new Error("Missing cached email");
 			}
-			await signInWithEmailLink(fbAuth, emailFromStorage!, window.location.href);
-			return {};
+			const response = await signInWithEmailLink(
+				fbAuth,
+				emailFromStorage!,
+				window.location.href,
+			);
+			const newUser = await loadOrCreateUser(response.user);
+			appContext.setUser(newUser);
+			console.log("Successful link login");
+			return true;
 		} catch (error) {
 			throw new Error(processFirebaseAuthError(error as Error));
 		}
 	}
-	return "noLogin";
+	console.log("No login link");
+	return false;
+};
+
+export const loginWithPassword = async (
+	email: string,
+	password: string,
+	appContext: AppContextData,
+) => {
+	try {
+		const response = await signInWithEmailAndPassword(fbAuth, email, password);
+		const newUser = await loadOrCreateUser(response.user);
+		appContext.setUser(newUser);
+		console.log("Successful password login");
+		return true;
+	} catch (error) {
+		throw new Error(processFirebaseAuthError(error as Error));
+	}
 };
 
 export const getAuthEmail = () => {

@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getDatabase } from "firebase/database";
+import { get, getDatabase, ref, set } from "firebase/database";
 import { getAppStage } from "../app/AppUtils";
 
 const DEV_CONFIG = {
@@ -24,5 +24,31 @@ const PROD_CONFIG = {
 };
 
 const app = initializeApp(getAppStage() === "prod" ? PROD_CONFIG : DEV_CONFIG);
-export const db = getDatabase(app);
-export const auth = getAuth(app);
+const fbDb = getDatabase(app);
+
+export const fbAuth = getAuth(app);
+
+export const readFbDb = async (path: string) => {
+	const dbRef = ref(fbDb, path);
+	try {
+		const snapshot = await get(dbRef);
+		if (snapshot.exists()) {
+			const data = snapshot.val();
+			return data;
+		} else {
+			return undefined;
+		}
+	} catch (error) {
+		console.error("Error reading data: ", error);
+	}
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const writeFbDb = async (path: string, data: any) => {
+	const dbRef = ref(fbDb, path);
+	try {
+		await set(dbRef, data);
+	} catch (error) {
+		console.error("Error writing data: ", error);
+	}
+};

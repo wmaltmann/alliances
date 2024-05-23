@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../../app/AppContext";
 import { getAppStage } from "../../app/AppUtils";
 import { signOut } from "../../libs/AuthLib";
-import { auth as fbAuth } from "../../libs/FirebaseLib";
+import { fbAuth } from "../../libs/FirebaseLib";
 
 enum MenuOptions {
 	About = "About",
@@ -16,14 +16,14 @@ enum MenuOptions {
 
 const TopBar: FC = () => {
 	const [user] = useAuthState(fbAuth);
-	const { auth } = useAppContext();
+	const appContextData = useAppContext();
 	const navigate = useNavigate();
 	const stage = getAppStage();
 
 	useEffect(() => {
 		if (user) {
-			auth.setUser(user);
-		} else auth.setUser(undefined);
+			appContextData.auth.setFbUser(user);
+		} else appContextData.auth.setFbUser(undefined);
 	}, [user]);
 
 	const handleLoginClick = () => {
@@ -32,7 +32,7 @@ const TopBar: FC = () => {
 
 	const handleLogoutClick = async () => {
 		try {
-			await signOut(auth);
+			await signOut(appContextData);
 			navigate("/");
 		} catch (error) {
 			console.error("Error logging out:", error);
@@ -80,7 +80,7 @@ const TopBar: FC = () => {
 							? "Alliance Selector Local"
 							: "Alliance Selector"}
 				</Typography>
-				{auth.user ? (
+				{appContextData.user ? (
 					<>
 						<AccountCircle />
 						<Button color="inherit" onClick={handleLogoutClick}>
@@ -102,19 +102,26 @@ const TopBar: FC = () => {
 					"aria-labelledby": "basic-button",
 				}}
 			>
-				{auth.user ? (
-					<>
-						<MenuItem onClick={() => handleClose(MenuOptions.Profile)}>
-							Profile
-						</MenuItem>
-						<MenuItem onClick={() => handleClose(MenuOptions.About)}>About</MenuItem>
-					</>
-				) : (
-					<>
-						<MenuItem onClick={() => handleClose(MenuOptions.Home)}>Home</MenuItem>
-						<MenuItem onClick={() => handleClose(MenuOptions.About)}>About</MenuItem>
-					</>
-				)}
+				{appContextData.user
+					? [
+							<MenuItem
+								key="profile"
+								onClick={() => handleClose(MenuOptions.Profile)}
+							>
+								Profile
+							</MenuItem>,
+							<MenuItem key="about" onClick={() => handleClose(MenuOptions.About)}>
+								About
+							</MenuItem>,
+						]
+					: [
+							<MenuItem key="home" onClick={() => handleClose(MenuOptions.Home)}>
+								Home
+							</MenuItem>,
+							<MenuItem key="about" onClick={() => handleClose(MenuOptions.About)}>
+								About
+							</MenuItem>,
+						]}
 			</Menu>
 		</AppBar>
 	);
