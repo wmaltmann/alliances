@@ -2,6 +2,7 @@ import {
 	User,
 	isSignInWithEmailLink,
 	sendSignInLinkToEmail,
+	signInWithEmailAndPassword,
 	signInWithEmailLink,
 } from "firebase/auth";
 import { AppContextData } from "../app/AppContext";
@@ -59,7 +60,7 @@ export const autoLogin = async (user: User | null | undefined, appContext: AppCo
 	return false;
 };
 
-export const loginWithLink = async (user: User | null | undefined, appContext: AppContextData) => {
+export const loginWithLink = async (appContext: AppContextData) => {
 	if (isSignInWithEmailLink(fbAuth, window.location.href)) {
 		try {
 			const emailFromStorage = localStorage.getItem("email");
@@ -81,6 +82,18 @@ export const loginWithLink = async (user: User | null | undefined, appContext: A
 	}
 	console.log("No login link");
 	return false;
+};
+
+export const loginWithPassword = async (
+	email: string,
+	password: string,
+	appContext: AppContextData,
+) => {
+	const response = await signInWithEmailAndPassword(fbAuth, email, password);
+	const newUser = await loadOrCreateUser(response.user);
+	appContext.setUser(newUser);
+	console.log("Successful password login");
+	return true;
 };
 
 export const getAuthEmail = () => {

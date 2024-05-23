@@ -1,4 +1,4 @@
-import { Link, Stack, Typography, useTheme } from "@mui/material";
+import { Checkbox, Link, Stack, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -8,7 +8,7 @@ import ASButton from "../components/page/common/ASButton";
 import ASTextField from "../components/page/common/ASTextField";
 import BorderBox from "../components/page/common/BorderBox";
 import Loading from "../components/page/common/Loading";
-import { getAuthEmail, loginWithLink, passwordlessLogin } from "../libs/AuthLib";
+import { getAuthEmail, loginWithLink, loginWithPassword, passwordlessLogin } from "../libs/AuthLib";
 import { fbAuth } from "../libs/FirebaseLib";
 
 export const LoginPage = () => {
@@ -16,8 +16,12 @@ export const LoginPage = () => {
 	const appContextData = useAppContext();
 	const navigate = useNavigate();
 	const { search } = useLocation();
-	const [email, setEmail] = useState("");
-	const [state, setState] = useState<"loading" | "login" | "confirmation" | "error">("login");
+	const [email, setEmail] = useState<string>("");
+	const [password, setPassword] = useState<string>("");
+	const [usePasswordless, setUsePasswordless] = useState<boolean>(false);
+	const [state, setState] = useState<
+		"loading" | "login" | "confirmation" | "error" | "reset_password"
+	>("login");
 	const [error, setError] = useState<string | undefined>(undefined);
 	const theme = useTheme();
 
@@ -25,7 +29,7 @@ export const LoginPage = () => {
 		const authenticate = async () => {
 			setState("loading");
 			try {
-				const response = await loginWithLink(user, appContextData);
+				const response = await loginWithLink(appContextData);
 				if (response) {
 					navigate("/");
 				} else {
@@ -49,16 +53,24 @@ export const LoginPage = () => {
 		event.preventDefault();
 		setState("loading");
 		try {
-			await passwordlessLogin(email);
-			setState("confirmation");
+			if (usePasswordless) {
+				await passwordlessLogin(email);
+				setState("confirmation");
+			} else {
+				await loginWithPassword(email, password, appContextData);
+				setState("loading");
+				navigate("/");
+			}
 		} catch (error) {
 			setError((error as Error).message);
 			setState("error");
 		}
 	};
-
-	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	const handleEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setEmail(event.target.value);
+	};
+	const handlePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setPassword(event.target.value);
 	};
 
 	return (
@@ -80,9 +92,29 @@ export const LoginPage = () => {
 								label="Email"
 								type="email"
 								value={email}
-								onChange={handleChange}
+								onChange={handleEmail}
 								fullWidth
 							/>
+							{!usePasswordless && (
+								<ASTextField
+									required
+									id="password"
+									label="Password"
+									type="password"
+									value={password}
+									onChange={handlePassword}
+									fullWidth
+								/>
+							)}
+							<Stack direction="row" alignItems="center" width="320px">
+								<Checkbox
+									checked={usePasswordless}
+									onChange={() => {
+										setUsePasswordless(!usePasswordless);
+									}}
+								/>
+								<Typography variant="body2">Passwordless sign-in</Typography>
+							</Stack>
 							<ASButton type="submit" text="Submit" width="120px" />
 						</Stack>
 					</BorderBox>
