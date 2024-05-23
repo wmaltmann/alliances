@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import { useAppContext } from "../app/AppContext";
 import Page from "../components/page/Page";
@@ -8,10 +8,12 @@ const ProfilePage: FC = () => {
 	return (
 		<Page>
 			<Stack height="100%" alignItems="center" justifyContent="center">
-				<Box>
+				<Stack spacing={3}>
 					<Typography variant="h1">Profile</Typography>
-					<Typography>{`Email: ${user?.profile.email}`}: </Typography>
-				</Box>
+					<Stack>
+						<Typography>{`Email: ${user?.profile.email}`} </Typography>
+					</Stack>
+				</Stack>
 			</Stack>
 		</Page>
 	);

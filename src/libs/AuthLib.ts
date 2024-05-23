@@ -43,6 +43,10 @@ const processFirebaseAuthError = (error: Error) => {
 			return "Your login link is invalid. Return to the login page to reenter your email and generate a new link.";
 		case "Missing cached email":
 			return "The email used to login in was not generated from this device. Return to the login page to reenter your email and generate a new link.";
+		case "Firebase: Error (auth/invalid-credential).":
+			return "Incorrect email or password";
+		case "Firebase: Exceeded daily quota for email sign-in. (auth/quota-exceeded).":
+			return "Passwordless login failed. Login using your password.";
 		default:
 			return "Unknown Error: " + error.message;
 	}
@@ -89,11 +93,15 @@ export const loginWithPassword = async (
 	password: string,
 	appContext: AppContextData,
 ) => {
-	const response = await signInWithEmailAndPassword(fbAuth, email, password);
-	const newUser = await loadOrCreateUser(response.user);
-	appContext.setUser(newUser);
-	console.log("Successful password login");
-	return true;
+	try {
+		const response = await signInWithEmailAndPassword(fbAuth, email, password);
+		const newUser = await loadOrCreateUser(response.user);
+		appContext.setUser(newUser);
+		console.log("Successful password login");
+		return true;
+	} catch (error) {
+		throw new Error(processFirebaseAuthError(error as Error));
+	}
 };
 
 export const getAuthEmail = () => {
