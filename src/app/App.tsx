@@ -5,8 +5,8 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { autoLogin } from "../libs/AuthLib";
 import { fbAuth } from "../libs/FirebaseLib";
 import AboutPage from "../routes/AboutPage";
-import HomePage from "../routes/HomePage";
 import LoginPage from "../routes/LoginPage";
+import PickListPage from "../routes/PickListPage";
 import ProfilePage from "../routes/ProfilePage";
 import WelcomePage from "../routes/WelcomePage";
 import { useAppContext } from "./AppContext";
@@ -35,7 +35,7 @@ function App() {
 						<>
 							<Route path="/about" element={<AboutPage />} />
 							<Route path="/profile" element={<ProfilePage />} />
-							<Route path="*" element={<HomePage />} />
+							<Route path="*" element={<PickListPage />} />
 						</>
 					) : (
 						<>
