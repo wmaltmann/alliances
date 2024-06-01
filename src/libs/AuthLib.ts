@@ -25,7 +25,7 @@ export const passwordlessLogin = async (email: string) => {
 	const baseUrl = getAppBaseUrl();
 	try {
 		await sendSignInLinkToEmail(fbAuth, email, {
-			url: baseUrl + "login",
+			url: baseUrl + "passwordlesslogin",
 			handleCodeInApp: true,
 		});
 		localStorage.setItem("email", email);

@@ -30,7 +30,7 @@ const EmailField: React.FC<EmailFieldProps> = ({
 	};
 	return (
 		<TextField
-			variant="standard"
+			variant="outlined"
 			required={required}
 			id={id}
 			label={label}

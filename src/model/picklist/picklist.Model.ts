@@ -1,8 +1,7 @@
 export interface PickList {
 	id: string;
 	name: string;
-	eventId: string | undefined;
-	//lists: Lists;
+	//eventId: string | undefined;
 }
 
 // export interface Lists {
