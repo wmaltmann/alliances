@@ -9,7 +9,8 @@ import LoginPage from "../routes/LoginPage";
 import PasswordlessLoginPage from "../routes/PasswordlessLoginPage";
 import PickListPage from "../routes/PickListPage";
 import ProfilePage from "../routes/ProfilePage";
-import WelcomePage from "../routes/WelcomePage";
+import SignUpPage from "../routes/SignUpPage";
+import VerifyEmailPage from "../routes/VerifyEmailPage";
 import { useAppContext } from "./AppContext";
 import { themeLight } from "./theme";
 
@@ -37,14 +38,18 @@ function App() {
 							<Route path="/about" element={<AboutPage />} />
 							<Route path="/profile" element={<ProfilePage />} />
 							<Route path="/login" element={<LoginPage />} />
+							<Route path="/signup" element={<SignUpPage />} />
+							<Route path="/verifyemail" element={<VerifyEmailPage />} />
 							<Route path="*" element={<PickListPage />} />
 						</>
 					) : (
 						<>
 							<Route path="/login" element={<LoginPage />} />
+							<Route path="/signup" element={<SignUpPage />} />
+							<Route path="/verifyemail" element={<VerifyEmailPage />} />
 							<Route path="/passwordlesslogin" element={<PasswordlessLoginPage />} />
 							<Route path="/about" element={<AboutPage />} />
-							<Route path="*" element={<WelcomePage />} />
+							<Route path="*" element={<LoginPage />} />
 						</>
 					)}
 				</Routes>

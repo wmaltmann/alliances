@@ -1,9 +1,13 @@
 import {
+	GoogleAuthProvider,
 	User,
+	createUserWithEmailAndPassword,
 	isSignInWithEmailLink,
+	sendEmailVerification,
 	sendSignInLinkToEmail,
 	signInWithEmailAndPassword,
 	signInWithEmailLink,
+	signInWithRedirect,
 } from "firebase/auth";
 import { AppContextData } from "../app/AppContext";
 import { getAppBaseUrl } from "../app/AppUtils";
@@ -47,6 +51,10 @@ const processFirebaseAuthError = (error: Error) => {
 			return "Incorrect email or password";
 		case "Firebase: Exceeded daily quota for email sign-in. (auth/quota-exceeded).":
 			return "Passwordless login failed. Login using your password.";
+		case "Firebase: Error (auth/email-already-in-use).":
+			return "Sign up failed. An account already exists using this email.";
+		case "Firebase: Password should be at least 6 characters (auth/weak-password).":
+			return "Sign up failed. Password should be at least 6 characters.";
 		default:
 			return "Unknown Error: " + error.message;
 	}
@@ -54,12 +62,19 @@ const processFirebaseAuthError = (error: Error) => {
 
 export const autoLogin = async (user: User | null | undefined, appContext: AppContextData) => {
 	if (user) {
-		appContext.auth.setFbUser(user);
-		const newUser = await loadOrCreateUser(user);
-		appContext.setUser(newUser);
-		console.log("Successful auto login");
-		return true;
+		if (user.emailVerified) {
+			appContext.auth.setFbUser(user);
+			const newUser = await loadOrCreateUser(user);
+			appContext.setUser(newUser);
+			console.log("Successful auto login");
+			return true;
+		} else {
+			await signOut(appContext);
+			console.log("Unsuccessful auto login - email unverified");
+			return false;
+		}
 	}
+	await signOut(appContext);
 	console.log("Unsuccessful auto login");
 	return false;
 };
@@ -106,4 +121,57 @@ export const loginWithPassword = async (
 
 export const getAuthEmail = () => {
 	return localStorage.getItem("email");
+};
+
+export const signInWithGoogle = async () => {
+	const provider = new GoogleAuthProvider();
+	await signInWithRedirect(fbAuth, provider);
+};
+
+export const signUpWithEmailAndPassword = async (email: string, password: string) => {
+	try {
+		const response = await createUserWithEmailAndPassword(fbAuth, email, password);
+		await sendEmailVerification(response.user);
+		await fbAuth.signOut();
+	} catch (error) {
+		throw new Error(processFirebaseAuthError(error as Error));
+	}
+};
+
+// export const verifyEmail = async (appContext: AppContextData) => {
+// 	try {
+// 		if (appContext.auth.fbUser) {
+// 			await sendEmailVerification(appContext.auth.fbUser);
+// 		} else {
+// 			throw new Error("No user");
+// 		}
+// 	} catch (error) {
+// 		throw new Error(processFirebaseAuthError(error as Error));
+// 	}
+// };
+
+export const validatePassword = (password: string) => {
+	if (!/.{8,}/.test(password)) {
+		throw new Error("Password should be at least 8 characters");
+	}
+	if (!/[A-Z]/.test(password)) {
+		throw new Error("Password should contain at least one capital letter");
+	}
+	if (!/[a-z]/.test(password)) {
+		throw new Error("Password should contain at least one lowercase letter");
+	}
+	if (!/\d/.test(password)) {
+		throw new Error("Password should contain at least one number");
+	}
+	if (!/[!@#$%^&*(),.?]/.test(password)) {
+		throw new Error("Password should contain at least one special character !@#$%^&*(),.?");
+	}
+	return true;
+};
+
+export const validateEmail = (email: string): boolean => {
+	if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+		throw new Error("Invalid email address");
+	}
+	return true;
 };

@@ -1,5 +1,4 @@
 import { Divider, Stack, Typography, useTheme } from "@mui/material";
-import { GoogleAuthProvider, getAuth, signInWithRedirect } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../app/AppContext";
@@ -8,7 +7,7 @@ import ASButton from "../components/common/ASButton";
 import ASLink from "../components/common/ASLink";
 import ASTextField from "../components/common/ASTextField";
 import Page from "../components/page/Page";
-import { loginWithPassword } from "../libs/AuthLib";
+import { loginWithPassword, signInWithGoogle } from "../libs/AuthLib";
 
 export const LoginPage = () => {
 	const theme = useTheme();
@@ -23,12 +22,6 @@ export const LoginPage = () => {
 		}
 	}, [appContextData.user]);
 
-	const signInWithGoogle = async () => {
-		const provider = new GoogleAuthProvider();
-		const auth = getAuth();
-		await signInWithRedirect(auth, provider);
-	};
-
 	const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		try {
@@ -38,9 +31,11 @@ export const LoginPage = () => {
 			console.log(error);
 		}
 	};
+
 	const handleEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setEmail(event.target.value);
 	};
+
 	const handlePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setPassword(event.target.value);
 	};
@@ -48,9 +43,11 @@ export const LoginPage = () => {
 	const handleSignUp = () => {
 		navigate("/signup");
 	};
+
 	const handleForgotPassword = () => {
 		navigate("/forgotpassword");
 	};
+
 	return (
 		<Page>
 			<Stack alignItems="center" justifyContent="space-between" height="100%">
@@ -61,7 +58,7 @@ export const LoginPage = () => {
 				>
 					Alliance Selector
 				</Typography>
-				<Stack spacing={3} component="form" onSubmit={handleLogin}>
+				<Stack spacing={3} component="form" onSubmit={handleLogin} width="300px">
 					<Typography variant="body1">Login</Typography>
 					<ASTextField
 						required

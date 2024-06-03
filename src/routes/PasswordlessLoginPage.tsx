@@ -1,3 +1,4 @@
+import { ArrowBack } from "@mui/icons-material";
 import { Link, Stack, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -62,8 +63,13 @@ export const LoginPage = () => {
 		setEmail(event.target.value);
 	};
 
+	const handleBack = () => {
+		navigate("/");
+	};
+
 	return (
 		<Page>
+			<ArrowBack onClick={handleBack} />
 			<Stack alignItems="center" height="100%">
 				<Typography
 					variant="h1"

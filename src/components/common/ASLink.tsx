@@ -8,7 +8,7 @@ interface ASLinkProps {
 
 const ASLink: React.FC<ASLinkProps> = ({ text, onClick }) => {
 	return (
-		<Link sx={{ textDecoration: "none" }} href="#" onClick={onClick}>
+		<Link sx={{ textDecoration: "none" }} href="" onClick={onClick}>
 			{text}
 		</Link>
 	);
