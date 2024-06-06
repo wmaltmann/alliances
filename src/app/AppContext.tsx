@@ -1,13 +1,9 @@
-import { User as fbUser } from "firebase/auth";
 import React, { ReactNode, createContext, useContext, useState } from "react";
+import Alerts from "../model/alerts/alerts.model";
 import { PickList } from "../model/picklist/picklist.Model";
 import { User } from "../model/user/user.Model";
 
 export interface AppContextData {
-	auth: {
-		fbUser: fbUser | undefined;
-		setFbUser: React.Dispatch<React.SetStateAction<fbUser | undefined>>;
-	};
 	user: User | undefined;
 	setUser: React.Dispatch<React.SetStateAction<User | undefined>>;
 	picklists: {
@@ -16,21 +12,18 @@ export interface AppContextData {
 		picklists: PickList[] | undefined;
 		setPicklists: React.Dispatch<React.SetStateAction<PickList[] | undefined>>;
 	};
+	alerts: Alerts;
 }
 
 const AppContext = createContext<AppContextData | undefined>(undefined);
 
 export const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-	const [fbUser, setFbUser] = useState<fbUser | undefined>(undefined);
 	const [user, setUser] = useState<User | undefined>(undefined);
 	const [activePicklist, setActivePicklist] = useState<PickList | undefined>(undefined);
 	const [picklists, setPicklists] = useState<PickList[] | undefined>(undefined);
+	const alerts = new Alerts();
 
 	const contextValue: AppContextData = {
-		auth: {
-			fbUser,
-			setFbUser,
-		},
 		user,
 		setUser,
 		picklists: {
@@ -39,6 +32,7 @@ export const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children
 			picklists,
 			setPicklists,
 		},
+		alerts,
 	};
 
 	return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;

@@ -28,7 +28,16 @@ export const LoginPage = () => {
 			await loginWithPassword(email, password, appContextData);
 			navigate("/");
 		} catch (error) {
-			console.log(error);
+			if (
+				(error as Error).message ===
+				"Your email is not verified. Check your email for a verification for us and click the link inside."
+			) {
+				navigate("/verifyemail");
+			} else if ((error as Error).message === "Incorrect email or password") {
+				appContextData.alerts.addAlert("error", (error as Error).message);
+			} else {
+				console.error(error);
+			}
 		}
 	};
 

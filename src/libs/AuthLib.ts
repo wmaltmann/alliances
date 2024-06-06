@@ -17,7 +17,6 @@ import { loadOrCreateUser } from "../model/user/user.Manager";
 export const signOut = async (appContext: AppContextData) => {
 	try {
 		await fbAuth.signOut();
-		appContext.auth.setFbUser(undefined);
 		appContext.setUser(undefined);
 		console.log("Successful logout");
 	} catch (err) {
@@ -55,6 +54,10 @@ const processFirebaseAuthError = (error: Error) => {
 			return "Sign up failed. An account already exists using this email.";
 		case "Firebase: Password should be at least 6 characters (auth/weak-password).":
 			return "Sign up failed. Password should be at least 6 characters.";
+		case "No User":
+			return "Please login in and then resend your verification email.";
+		case "Email not verified":
+			return "Your email is not verified. Check your email for a verification for us and click the link inside.";
 		default:
 			return "Unknown Error: " + error.message;
 	}
@@ -63,18 +66,15 @@ const processFirebaseAuthError = (error: Error) => {
 export const autoLogin = async (user: User | null | undefined, appContext: AppContextData) => {
 	if (user) {
 		if (user.emailVerified) {
-			appContext.auth.setFbUser(user);
 			const newUser = await loadOrCreateUser(user);
 			appContext.setUser(newUser);
 			console.log("Successful auto login");
 			return true;
 		} else {
-			await signOut(appContext);
-			console.log("Unsuccessful auto login - email unverified");
+			console.log("Unsuccessful auto login - email not verified");
 			return false;
 		}
 	}
-	await signOut(appContext);
 	console.log("Unsuccessful auto login");
 	return false;
 };
@@ -110,10 +110,14 @@ export const loginWithPassword = async (
 ) => {
 	try {
 		const response = await signInWithEmailAndPassword(fbAuth, email, password);
-		const newUser = await loadOrCreateUser(response.user);
-		appContext.setUser(newUser);
-		console.log("Successful password login");
-		return true;
+		if (response.user.emailVerified) {
+			const newUser = await loadOrCreateUser(response.user);
+			appContext.setUser(newUser);
+			console.log("Successful password login");
+			return true;
+		} else {
+			throw new Error("Email not verified");
+		}
 	} catch (error) {
 		throw new Error(processFirebaseAuthError(error as Error));
 	}
@@ -132,23 +136,23 @@ export const signUpWithEmailAndPassword = async (email: string, password: string
 	try {
 		const response = await createUserWithEmailAndPassword(fbAuth, email, password);
 		await sendEmailVerification(response.user);
-		await fbAuth.signOut();
 	} catch (error) {
 		throw new Error(processFirebaseAuthError(error as Error));
 	}
 };
 
-// export const verifyEmail = async (appContext: AppContextData) => {
-// 	try {
-// 		if (appContext.auth.fbUser) {
-// 			await sendEmailVerification(appContext.auth.fbUser);
-// 		} else {
-// 			throw new Error("No user");
-// 		}
-// 	} catch (error) {
-// 		throw new Error(processFirebaseAuthError(error as Error));
-// 	}
-// };
+export const sendVerifyEmail = async () => {
+	try {
+		if (fbAuth.currentUser) {
+			await sendEmailVerification(fbAuth.currentUser);
+			return fbAuth.currentUser.email;
+		} else {
+			throw new Error("No User");
+		}
+	} catch (error) {
+		throw new Error(processFirebaseAuthError(error as Error));
+	}
+};
 
 export const validatePassword = (password: string) => {
 	if (!/.{8,}/.test(password)) {

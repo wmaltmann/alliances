@@ -1,15 +1,21 @@
+import { ThemeProvider } from "@mui/material";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./app/App";
 import { AppContextProvider } from "./app/AppContext";
 import * as serviceWorkerRegistration from "./app/serviceWorkerRegistration";
+import { themeLight } from "./app/theme";
+import AlertsManager from "./components/common/AlertManager";
 import "./index.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(
 	<React.StrictMode>
 		<AppContextProvider>
-			<App />
+			<ThemeProvider theme={themeLight}>
+				<AlertsManager />
+				<App />
+			</ThemeProvider>
 		</AppContextProvider>
 	</React.StrictMode>,
 );

@@ -1,12 +1,10 @@
 import { AccountCircle, Menu as MenuIcon } from "@mui/icons-material";
 import { AppBar, Button, IconButton, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
-import { FC, useEffect, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../../app/AppContext";
 import { getAppStage } from "../../app/AppUtils";
 import { signOut } from "../../libs/AuthLib";
-import { fbAuth } from "../../libs/FirebaseLib";
 
 enum MenuOptions {
 	About = "About",
@@ -15,16 +13,9 @@ enum MenuOptions {
 }
 
 const TopBar: FC = () => {
-	const [user] = useAuthState(fbAuth);
 	const appContextData = useAppContext();
 	const navigate = useNavigate();
 	const stage = getAppStage();
-
-	useEffect(() => {
-		if (user) {
-			appContextData.auth.setFbUser(user);
-		} else appContextData.auth.setFbUser(undefined);
-	}, [user]);
 
 	const handleLoginClick = () => {
 		navigate("/login");
