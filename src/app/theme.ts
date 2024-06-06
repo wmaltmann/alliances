@@ -106,7 +106,7 @@ export const themeLight = createTheme({
 	breakpoints: {
 		values: {
 			mobile: 0,
-			desktop: 1024,
+			desktop: 1280,
 		},
 	},
 });

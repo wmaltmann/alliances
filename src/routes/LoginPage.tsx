@@ -1,160 +1,115 @@
-import { Checkbox, Link, Stack, Typography, useTheme } from "@mui/material";
+import { Divider, Stack, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../app/AppContext";
+import SignInWithGoogleButton from "../assets/google/web_light_sq_SI.svg";
+import ASButton from "../components/common/ASButton";
+import ASLink from "../components/common/ASLink";
+import ASTextField from "../components/common/ASTextField";
 import Page from "../components/page/Page";
-import ASButton from "../components/page/common/ASButton";
-import ASTextField from "../components/page/common/ASTextField";
-import BorderBox from "../components/page/common/BorderBox";
-import Loading from "../components/page/common/Loading";
-import { getAuthEmail, loginWithLink, loginWithPassword, passwordlessLogin } from "../libs/AuthLib";
-import { fbAuth } from "../libs/FirebaseLib";
+import { loginWithPassword, signInWithGoogle } from "../libs/AuthLib";
 
 export const LoginPage = () => {
-	const [user] = useAuthState(fbAuth);
-	const appContextData = useAppContext();
-	const navigate = useNavigate();
-	const { search } = useLocation();
+	const theme = useTheme();
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
-	const [usePasswordless, setUsePasswordless] = useState<boolean>(false);
-	const [state, setState] = useState<
-		"loading" | "login" | "confirmation" | "error" | "reset_password"
-	>("login");
-	const [error, setError] = useState<string | undefined>(undefined);
-	const theme = useTheme();
+	const appContextData = useAppContext();
+	const navigate = useNavigate();
 
 	useEffect(() => {
-		const authenticate = async () => {
-			setState("loading");
-			try {
-				const response = await loginWithLink(appContextData);
-				if (response) {
-					navigate("/");
-				} else {
-					setState("login");
-				}
-			} catch (error) {
-				if (email === "") {
-					const tempEmail = getAuthEmail();
-					if (tempEmail) {
-						setEmail(tempEmail);
-					}
-				}
-				setError((error as Error).message);
-				setState("error");
-			}
-		};
-		void authenticate();
-	}, [user, search, navigate]);
+		if (appContextData.user) {
+			navigate("/");
+		}
+	}, [appContextData.user]);
 
 	const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		setState("loading");
 		try {
-			if (usePasswordless) {
-				await passwordlessLogin(email);
-				setState("confirmation");
-			} else {
-				await loginWithPassword(email, password, appContextData);
-				setState("loading");
-				navigate("/");
-			}
+			await loginWithPassword(email, password, appContextData);
+			navigate("/");
 		} catch (error) {
-			setError((error as Error).message);
-			setState("error");
+			if (
+				(error as Error).message ===
+				"Your email is not verified. Check your email for a verification for us and click the link inside."
+			) {
+				navigate("/verifyemail");
+			} else if ((error as Error).message === "Incorrect email or password") {
+				appContextData.alerts.addAlert("error", (error as Error).message);
+			} else {
+				console.error(error);
+			}
 		}
 	};
+
 	const handleEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setEmail(event.target.value);
 	};
+
 	const handlePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setPassword(event.target.value);
 	};
 
+	const handleSignUp = () => {
+		navigate("/signup");
+	};
+
+	const handleForgotPassword = () => {
+		navigate("/forgotpassword");
+	};
+
 	return (
 		<Page>
-			<Stack alignItems="center" justifyContent="center" height="100%">
-				{state === "loading" && <Loading />}
-				{state === "login" && (
-					<BorderBox width="300px">
-						<Stack
-							spacing={3}
-							component="form"
-							onSubmit={handleLogin}
-							alignItems="center"
-						>
-							<Typography variant="body1">Enter your email to Login</Typography>
-							<ASTextField
-								required
-								id="email"
-								label="Email"
-								type="email"
-								value={email}
-								onChange={handleEmail}
-								fullWidth
-							/>
-							{!usePasswordless && (
-								<ASTextField
-									required
-									id="password"
-									label="Password"
-									type="password"
-									value={password}
-									onChange={handlePassword}
-									fullWidth
-								/>
-							)}
-							<Stack direction="row" alignItems="center" width="320px">
-								<Checkbox
-									checked={usePasswordless}
-									onChange={() => {
-										setUsePasswordless(!usePasswordless);
-									}}
-								/>
-								<Typography variant="body2">Passwordless sign-in</Typography>
-							</Stack>
-							<ASButton type="submit" text="Submit" width="120px" />
-						</Stack>
-					</BorderBox>
-				)}
-				{state === "confirmation" && (
-					<BorderBox width="300px">
-						<Stack spacing={1} alignItems="center">
-							<Typography variant="body1">We sent a login link to:</Typography>
-							<Typography variant="body1" color={theme.palette.primary.main}>
-								{email}
-							</Typography>
-							<Typography variant="body1">
-								Click the link in the email to continue.
-							</Typography>
-							<Typography variant="body2">
-								<Link href="#" onClick={() => setState("login")}>
-									return to login page
-								</Link>
-							</Typography>
-						</Stack>
-					</BorderBox>
-				)}
-				{state === "error" && (
-					<BorderBox width="300px">
-						<Stack spacing={1} alignItems="center">
-							<Typography variant="body1">
-								We've encountered an error logging you in with email:
-							</Typography>
-							<Typography variant="body1" color={theme.palette.primary.main}>
-								{email}
-							</Typography>
-							<Typography variant="error1">{error}</Typography>
-							<Typography variant="body2">
-								<Link href="#" onClick={() => setState("login")}>
-									return to login page
-								</Link>
-							</Typography>
-						</Stack>
-					</BorderBox>
-				)}
+			<Stack alignItems="center" justifyContent="space-between" height="100%">
+				<Typography
+					variant="h1"
+					color={theme.palette.primary.main}
+					paddingTop={theme.spacing(6)}
+				>
+					Alliance Selector
+				</Typography>
+				<Stack spacing={3} component="form" onSubmit={handleLogin} width="300px">
+					<Typography variant="body1">Login</Typography>
+					<ASTextField
+						required
+						id="email"
+						label="Email"
+						type="email"
+						value={email}
+						onChange={handleEmail}
+						fullWidth
+					/>
+					<ASTextField
+						required
+						id="password"
+						label="Password"
+						type="password"
+						value={password}
+						onChange={handlePassword}
+						fullWidth
+					/>
+					<Typography
+						textAlign="right"
+						variant="body2"
+						style={{ marginTop: theme.spacing(1) }}
+					>
+						<ASLink text="Forgot password?" onClick={handleForgotPassword} />
+					</Typography>
+					<ASButton type="submit" text="Sign in" />
+					<Typography variant="body2">
+						<Divider>Or</Divider>
+					</Typography>
+					<img
+						src={SignInWithGoogleButton}
+						alt={"Sign in with Google"}
+						onClick={() => {
+							void signInWithGoogle();
+						}}
+						style={{ cursor: "pointer", height: "40px" }}
+					/>
+				</Stack>
+				<Typography variant="body2" paddingBottom={theme.spacing(2)}>
+					Don't have an account? <ASLink text="Sign up" onClick={handleSignUp} />
+				</Typography>
 			</Stack>
 		</Page>
 	);
