@@ -1,5 +1,6 @@
 import { User as FbUser } from "firebase/auth";
 import { readFbDb, writeFbDb } from "../../libs/FirebaseLib";
+import { getRandomColor } from "../../libs/Utills";
 import { Profile, User } from "./user.Model";
 
 export const loadOrCreateUser = async (fbUser: FbUser) => {
@@ -16,6 +17,7 @@ export const loadOrCreateUser = async (fbUser: FbUser) => {
 			email: fbUser.email || "",
 			emailVerified: fbUser.emailVerified,
 			createdDate: today.toISOString(),
+			color: getRandomColor(),
 		};
 		await writeFbDb(`/users/${fbUser.uid}/profile`, profileData);
 		const newUser: User = {

@@ -130,7 +130,7 @@ export const themeDark = createTheme({
 		},
 		background: {
 			default: "#0f0f0f",
-			paper: "#0f0f0f",
+			paper: "#2B2B2B",
 		},
 	},
 	typography: typography,
@@ -140,4 +140,5 @@ export const themeDark = createTheme({
 			desktop: 1280,
 		},
 	},
+	spacing: 4,
 });

@@ -1,14 +1,14 @@
-import { Stack, Typography } from "@mui/material";
+import { Stack } from "@mui/material";
 import { FC, useState } from "react";
-import { useAppContext } from "../app/AppContext";
+import { useNavigate } from "react-router-dom";
 import ASButton from "../components/common/ASButton";
 import ASTextField from "../components/common/ASTextField";
 import Page from "../components/page/Page";
+import TopBar from "../components/page/TopBar";
 
-const PicklistCreatePage: FC = () => {
+const CreateListPage: FC = () => {
+	const navigate = useNavigate();
 	const [name, setName] = useState<string>("");
-	const { user } = useAppContext();
-	console.log(user);
 
 	const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setName(event.target.value);
@@ -18,15 +18,19 @@ const PicklistCreatePage: FC = () => {
 		console.log("click");
 	};
 
+	const handleOnClickBack = () => {
+		navigate(`/lists`);
+	};
+
 	return (
 		<Page>
-			<Stack height="100%" alignItems="center" justifyContent="center">
+			<TopBar onClickBack={handleOnClickBack} />
+			<Stack height="100%" alignItems="center" justifyContent="center" paddingTop="60px">
 				<Stack spacing={3} component="form" onSubmit={handleCreatePicklist} width="300px">
-					<Typography variant="body1">Enter a name for your new picklist.</Typography>
 					<ASTextField
 						required
 						id="name"
-						label="Picklist name"
+						label="Picklist Name"
 						type="text"
 						value={name}
 						onChange={handleChangeName}
@@ -39,4 +43,4 @@ const PicklistCreatePage: FC = () => {
 	);
 };
 
-export default PicklistCreatePage;
+export default CreateListPage;

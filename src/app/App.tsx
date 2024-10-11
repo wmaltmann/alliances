@@ -5,9 +5,10 @@ import { autoLogin } from "../libs/AuthLib";
 import { fbAuth } from "../libs/FirebaseLib";
 import AlliancesPage from "../routes/AlliancesPage";
 import DashboardPage from "../routes/DashboardPage";
-import EventsPage from "../routes/EventsPage";
 import ListPage from "../routes/ListPage";
+import ListsPage from "../routes/ListsPage";
 import LoginPage from "../routes/LoginPage";
+import NewListPage from "../routes/NewListPage";
 import PasswordlessLoginPage from "../routes/PasswordlessLoginPage";
 import ProfilePage from "../routes/ProfilePage";
 import SharePage from "../routes/SharePage";
@@ -39,12 +40,13 @@ function App() {
 				{authenticated ? (
 					<>
 						<Route path="/profile" element={<ProfilePage />} />
-						<Route path="/events" element={<EventsPage />} />
+						<Route path="/lists" element={<ListsPage />} />
+						<Route path="/newlist" element={<NewListPage />} />
 						<Route path="/:id/list" element={<ListPage />} />
 						<Route path="/:id/dashboard" element={<DashboardPage />} />
 						<Route path="/:id/alliances" element={<AlliancesPage />} />
 						<Route path="/:id/share" element={<SharePage />} />
-						<Route path="*" element={<Navigate to="/events" />} />
+						<Route path="*" element={<Navigate to="/lists" />} />
 					</>
 				) : (
 					<>

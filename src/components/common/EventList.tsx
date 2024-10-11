@@ -2,14 +2,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton, List, ListItem, Typography } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Event } from "../../model/event/event.Model";
-import FloatingButton from "./FloatingButton";
+import { Picklist } from "../../model/picklist/picklist.Model";
 
-interface EventListProps {
-	events: Event[];
+interface PicklistsProps {
+	picklists: Picklist[];
 }
 
-const EventList: React.FC<EventListProps> = ({ events }) => {
+const EventList: React.FC<PicklistsProps> = ({ picklists }) => {
 	const navigate = useNavigate();
 
 	const handleItemClick = (id: string | number) => {
@@ -20,14 +19,10 @@ const EventList: React.FC<EventListProps> = ({ events }) => {
 		console.log(`Delete event with ID: ${id}`);
 	};
 
-	const handleNew = () => {
-		console.log("Add Event");
-	};
-
 	return (
 		<>
 			<List>
-				{events.map((event, index) => (
+				{picklists.map((event, index) => (
 					<ListItem
 						key={index}
 						onClick={() => handleItemClick(event.id)}
@@ -47,7 +42,6 @@ const EventList: React.FC<EventListProps> = ({ events }) => {
 					</ListItem>
 				))}
 			</List>
-			<FloatingButton text="+" onClick={handleNew} />
 		</>
 	);
 };

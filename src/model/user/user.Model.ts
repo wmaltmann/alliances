@@ -9,4 +9,5 @@ export interface Profile {
 	email: string;
 	emailVerified: boolean;
 	createdDate: string;
+	color: string;
 }
