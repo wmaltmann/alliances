@@ -21,6 +21,8 @@ export const loadOrCreateUser = async (fbUser: FbUser) => {
 		const newUser: User = {
 			id: fbUser.uid,
 			profile: profileData,
+			picklists: [],
+			activePicklist: undefined,
 		};
 		return newUser;
 	}

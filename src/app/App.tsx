@@ -3,10 +3,14 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { autoLogin } from "../libs/AuthLib";
 import { fbAuth } from "../libs/FirebaseLib";
+import AlliancesPage from "../routes/AlliancesPage";
+import DashboardPage from "../routes/DashboardPage";
+import EventsPage from "../routes/EventsPage";
+import ListPage from "../routes/ListPage";
 import LoginPage from "../routes/LoginPage";
 import PasswordlessLoginPage from "../routes/PasswordlessLoginPage";
-import PickListPage from "../routes/PickListPage";
 import ProfilePage from "../routes/ProfilePage";
+import SharePage from "../routes/SharePage";
 import SignUpPage from "../routes/SignUpPage";
 import VerifyEmailPage from "../routes/VerifyEmailPage";
 import { useAppContext } from "./AppContext";
@@ -14,6 +18,7 @@ import { useAppContext } from "./AppContext";
 function App() {
 	const appContextData = useAppContext();
 	const [user] = useAuthState(fbAuth);
+	const authenticated = user?.emailVerified;
 
 	useEffect(() => {
 		const authenticate = async () => {
@@ -31,13 +36,15 @@ function App() {
 	return (
 		<Router>
 			<Routes>
-				{appContextData.user ? (
+				{authenticated ? (
 					<>
 						<Route path="/profile" element={<ProfilePage />} />
-						<Route path="/login" element={<LoginPage />} />
-						<Route path="/signup" element={<SignUpPage />} />
-						<Route path="/verifyemail" element={<VerifyEmailPage />} />
-						<Route path="*" element={<PickListPage />} />
+						<Route path="/events" element={<EventsPage />} />
+						<Route path="/:id/list" element={<ListPage />} />
+						<Route path="/:id/dashboard" element={<DashboardPage />} />
+						<Route path="/:id/alliances" element={<AlliancesPage />} />
+						<Route path="/:id/share" element={<SharePage />} />
+						<Route path="*" element={<Navigate to="/events" />} />
 					</>
 				) : (
 					<>
@@ -45,7 +52,7 @@ function App() {
 						<Route path="/signup" element={<SignUpPage />} />
 						<Route path="/verifyemail" element={<VerifyEmailPage />} />
 						<Route path="/passwordlesslogin" element={<PasswordlessLoginPage />} />
-						<Route path="*" element={<Navigate to="/login" />} />
+						<Route path="*" element={<LoginPage />} />
 					</>
 				)}
 			</Routes>

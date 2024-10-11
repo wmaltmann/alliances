@@ -1,6 +1,8 @@
 export interface User {
 	id: string;
 	profile: Profile;
+	picklists: string[];
+	activePicklist: string | undefined;
 }
 
 export interface Profile {

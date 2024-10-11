@@ -1,4 +1,4 @@
-export interface PickList {
+export interface Event {
 	id: string;
 	name: string;
 	//eventId: string | undefined;

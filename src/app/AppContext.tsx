@@ -1,16 +1,20 @@
 import React, { ReactNode, createContext, useContext, useState } from "react";
 import Alerts from "../model/alerts/alerts.model";
-import { PickList } from "../model/picklist/picklist.Model";
+import { Event } from "../model/event/event.Model";
 import { User } from "../model/user/user.Model";
 
 export interface AppContextData {
 	user: User | undefined;
 	setUser: React.Dispatch<React.SetStateAction<User | undefined>>;
 	picklists: {
-		activePicklist: PickList | undefined;
-		setActivePicklist: React.Dispatch<React.SetStateAction<PickList | undefined>>;
-		picklists: PickList[] | undefined;
-		setPicklists: React.Dispatch<React.SetStateAction<PickList[] | undefined>>;
+		activeEvent: Event | undefined;
+		setActiveEvent: React.Dispatch<React.SetStateAction<Event | undefined>>;
+		events: Event[] | undefined;
+		setEvents: React.Dispatch<React.SetStateAction<Event[] | undefined>>;
+	};
+	bottomBar: {
+		state: number;
+		setState: React.Dispatch<React.SetStateAction<number>>;
 	};
 	alerts: Alerts;
 }
@@ -19,18 +23,23 @@ const AppContext = createContext<AppContextData | undefined>(undefined);
 
 export const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 	const [user, setUser] = useState<User | undefined>(undefined);
-	const [activePicklist, setActivePicklist] = useState<PickList | undefined>(undefined);
-	const [picklists, setPicklists] = useState<PickList[] | undefined>(undefined);
+	const [activeEvent, setActiveEvent] = useState<Event | undefined>(undefined);
+	const [events, setEvents] = useState<Event[] | undefined>(undefined);
+	const [bottomBarState, setBottomBarState] = useState<number>(0);
 	const alerts = new Alerts();
 
 	const contextValue: AppContextData = {
 		user,
 		setUser,
 		picklists: {
-			activePicklist,
-			setActivePicklist,
-			picklists,
-			setPicklists,
+			activeEvent,
+			setActiveEvent,
+			events,
+			setEvents,
+		},
+		bottomBar: {
+			state: bottomBarState,
+			setState: setBottomBarState,
 		},
 		alerts,
 	};
