@@ -1,22 +1,29 @@
 import { Avatar, Stack, Typography, useTheme } from "@mui/material";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../app/AppContext";
 import EventList from "../components/common/EventList";
 import FloatingButton from "../components/common/FloatingButton";
 import Page from "../components/page/Page";
-import { Picklist } from "../model/picklist/picklist.Model";
+import { getUserPicklists } from "../model/picklist/picklist.Manager";
 
 const ListsPage: FC = () => {
 	const navigate = useNavigate();
-	const { user } = useAppContext();
+	const { user, lists } = useAppContext();
+	const picklists = lists.picklists;
+	const setPicklists = lists.setPicklists;
+
 	const theme = useTheme();
-	const picklists: Picklist[] = [
-		{ id: "1", name: "Event 1" },
-		{ id: "2", name: "Event 2" },
-		{ id: "2", name: "Event 2" },
-		{ id: "2", name: "Event 2" },
-	];
+
+	useEffect(() => {
+		const loading = async () => {
+			if (user) {
+				const newPicklists = await getUserPicklists(user?.id);
+				setPicklists(newPicklists);
+			}
+		};
+		void loading();
+	}, [user]);
 
 	const handleAvatarClick = () => {
 		navigate("/profile");
@@ -40,9 +47,13 @@ const ListsPage: FC = () => {
 						{user?.profile.email.substring(0, 2)}
 					</Avatar>
 				</Stack>
-				<EventList picklists={picklists}></EventList>
+				<EventList picklists={picklists ? picklists : []}></EventList>
 			</Stack>
-			<FloatingButton text="Create Picklist" onClick={handleNew} extended />
+			<FloatingButton
+				text="Create Picklist"
+				onClick={handleNew}
+				extended={(picklists?.length || 0) < 2}
+			/>
 		</Page>
 	);
 };

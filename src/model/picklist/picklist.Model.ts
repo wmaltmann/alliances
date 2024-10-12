@@ -1,5 +1,7 @@
 export interface Picklist {
 	id: string;
 	name: string;
-	//eventId: string | undefined;
+	permission: PicklistPermission;
 }
+
+export type PicklistPermission = "member" | "owner" | "none";

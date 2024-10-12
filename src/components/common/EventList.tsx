@@ -1,5 +1,5 @@
 import DeleteIcon from "@mui/icons-material/Delete";
-import { IconButton, List, ListItem, Typography } from "@mui/material";
+import { IconButton, List, ListItem, Typography, useTheme } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Picklist } from "../../model/picklist/picklist.Model";
@@ -10,6 +10,7 @@ interface PicklistsProps {
 
 const EventList: React.FC<PicklistsProps> = ({ picklists }) => {
 	const navigate = useNavigate();
+	const theme = useTheme();
 
 	const handleItemClick = (id: string | number) => {
 		navigate(`/${id}/list`);
@@ -22,19 +23,27 @@ const EventList: React.FC<PicklistsProps> = ({ picklists }) => {
 	return (
 		<>
 			<List>
-				{picklists.map((event, index) => (
+				{picklists.map((picklist, index) => (
 					<ListItem
 						key={index}
-						onClick={() => handleItemClick(event.id)}
-						sx={{ display: "flex", justifyContent: "space-between", width: "100%" }}
+						onClick={() => handleItemClick(picklist.id)}
+						sx={{
+							display: "flex",
+							justifyContent: "space-between",
+							width: `calc(100% - ${theme.spacing(2)})`,
+							bgcolor: "background.paper",
+							margin: theme.spacing(1),
+							paddingTop: theme.spacing(1),
+							paddingBottom: theme.spacing(1),
+						}}
 					>
-						<Typography>{event.name}</Typography>
+						<Typography>{picklist.name}</Typography>
 						<IconButton
 							edge="end"
 							color="error"
 							onClick={(e) => {
 								e.stopPropagation();
-								handleDelete(event.id);
+								handleDelete(picklist.id);
 							}}
 						>
 							<DeleteIcon />

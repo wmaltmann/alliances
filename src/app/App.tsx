@@ -3,6 +3,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { autoLogin } from "../libs/AuthLib";
 import { fbAuth } from "../libs/FirebaseLib";
+import { listenToPicklist } from "../model/picklist/picklist.Manager";
 import AlliancesPage from "../routes/AlliancesPage";
 import DashboardPage from "../routes/DashboardPage";
 import ListPage from "../routes/ListPage";
@@ -33,6 +34,19 @@ function App() {
 		};
 		void authenticate();
 	}, [user]);
+
+	useEffect(() => {
+		const unsubscribe = listenToPicklist(
+			appContextData.lists.activePicklistId,
+			appContextData.lists.setActivePicklist,
+		);
+
+		return () => {
+			if (unsubscribe) {
+				unsubscribe();
+			}
+		};
+	}, [appContextData.lists.activePicklistId]);
 
 	return (
 		<Router>

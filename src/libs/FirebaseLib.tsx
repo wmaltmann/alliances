@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { get, getDatabase, ref, set } from "firebase/database";
+import { get, getDatabase, onValue, ref, set, update } from "firebase/database";
 import { getAppStage } from "../app/AppUtils";
 
 const DEV_CONFIG = {
@@ -30,25 +30,39 @@ export const fbAuth = getAuth(app);
 
 export const readFbDb = async (path: string) => {
 	const dbRef = ref(fbDb, path);
-	try {
-		const snapshot = await get(dbRef);
-		if (snapshot.exists()) {
-			const data = snapshot.val();
-			return data;
-		} else {
-			return undefined;
-		}
-	} catch (error) {
-		console.error("Error reading data: ", error);
+	const snapshot = await get(dbRef);
+	if (snapshot.exists()) {
+		const data = snapshot.val();
+		return data;
+	} else {
+		return undefined;
 	}
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const writeFbDb = async (path: string, data: any) => {
 	const dbRef = ref(fbDb, path);
-	try {
-		await set(dbRef, data);
-	} catch (error) {
-		console.error("Error writing data: ", error);
-	}
+	await set(dbRef, data);
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const updateFbDb = async (path: string, data: any) => {
+	const dbRef = ref(fbDb, path);
+	await update(dbRef, data);
+};
+
+export const subscribeFbDb = (
+	path: string,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	setData: (data: any) => void,
+): (() => void) | undefined => {
+	const unsubscribe = onValue(ref(fbDb, path), (snapshot) => {
+		if (snapshot.exists()) {
+			setData(snapshot.val());
+		} else {
+			setData(undefined);
+		}
+	});
+
+	return unsubscribe;
 };
