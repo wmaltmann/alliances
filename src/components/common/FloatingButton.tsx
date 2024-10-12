@@ -6,9 +6,10 @@ interface FloatingButtonProps {
 	text: string;
 	onClick: React.MouseEventHandler<HTMLButtonElement>;
 	extended?: boolean;
+	bottomMenu?: boolean;
 }
 
-const FloatingButton: React.FC<FloatingButtonProps> = ({ onClick, text, extended }) => {
+const FloatingButton: React.FC<FloatingButtonProps> = ({ onClick, text, extended, bottomMenu }) => {
 	return (
 		<Fab
 			color="primary"
@@ -17,7 +18,7 @@ const FloatingButton: React.FC<FloatingButtonProps> = ({ onClick, text, extended
 			variant={extended ? "extended" : "circular"}
 			sx={{
 				position: "fixed",
-				bottom: 16,
+				bottom: bottomMenu ? 76 : 16,
 				right: 16,
 				textTransform: "none",
 			}}

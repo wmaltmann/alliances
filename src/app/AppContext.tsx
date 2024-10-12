@@ -1,6 +1,7 @@
 import React, { ReactNode, createContext, useContext, useState } from "react";
 import Alerts from "../model/alerts/alerts.model";
-import { Picklist } from "../model/picklist/picklist.Model";
+import { migratePicklist } from "../model/picklist/picklist.Manager";
+import { FbDbPicklist, Picklist, PicklistCore } from "../model/picklist/picklist.Model";
 import { User } from "../model/user/user.Model";
 
 export interface AppContextData {
@@ -8,11 +9,11 @@ export interface AppContextData {
 	setUser: React.Dispatch<React.SetStateAction<User | undefined>>;
 	lists: {
 		activePicklist: Picklist | undefined;
-		setActivePicklist: React.Dispatch<React.SetStateAction<Picklist | undefined>>;
+		setActivePicklist: (picklist: FbDbPicklist) => void;
 		activePicklistId: string;
 		setActivePicklistId: React.Dispatch<React.SetStateAction<string>>;
-		picklists: Picklist[] | undefined;
-		setPicklists: React.Dispatch<React.SetStateAction<Picklist[] | undefined>>;
+		picklists: PicklistCore[] | undefined;
+		setPicklists: React.Dispatch<React.SetStateAction<PicklistCore[] | undefined>>;
 	};
 	bottomBar: {
 		state: number;
@@ -27,16 +28,20 @@ export const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children
 	const [user, setUser] = useState<User | undefined>(undefined);
 	const [activePicklist, setActivePicklist] = useState<Picklist | undefined>(undefined);
 	const [activePicklistId, setActivePicklistId] = useState<string>("");
-	const [picklists, setPicklists] = useState<Picklist[] | undefined>(undefined);
+	const [picklists, setPicklists] = useState<PicklistCore[] | undefined>(undefined);
 	const [bottomBarState, setBottomBarState] = useState<number>(0);
 	const alerts = new Alerts();
+
+	const stuff = (picklist: FbDbPicklist) => {
+		setActivePicklist(migratePicklist(picklist));
+	};
 
 	const contextValue: AppContextData = {
 		user,
 		setUser,
 		lists: {
 			activePicklist,
-			setActivePicklist,
+			setActivePicklist: stuff,
 			activePicklistId,
 			setActivePicklistId,
 			picklists,

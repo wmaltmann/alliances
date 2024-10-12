@@ -15,3 +15,9 @@ export const getRandomColor = () => {
 	const randomIndex = Math.floor(Math.random() * colors.length);
 	return colors[randomIndex];
 };
+
+export const getPickListIdFromPath = (url: string): string => {
+	const regex = /^\/([^/]+)\/[a-zA-Z0-9*]+$/;
+	const match = url.match(regex);
+	return match ? match[1] : "";
+};

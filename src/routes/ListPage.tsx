@@ -1,55 +1,51 @@
 import { Stack, Typography } from "@mui/material";
-import { FC } from "react";
-import { useNavigate } from "react-router-dom";
+import { FC, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAppContext } from "../app/AppContext";
+import FloatingButton from "../components/common/FloatingButton";
+import TeamList from "../components/common/TeamList";
 import BottomBar from "../components/page/BottomBar";
 import Page from "../components/page/Page";
 import TopBar from "../components/page/TopBar";
+import { loadPicklist } from "../model/picklist/picklist.Manager";
 
 const ListPage: FC = () => {
 	const navigate = useNavigate();
+	const location = useLocation();
+	const {
+		lists: { activePicklist, setActivePicklistId },
+	} = useAppContext();
+	useEffect(() => {
+		loadPicklist(location, setActivePicklistId);
+	}, [location]);
+
+	useEffect(() => {
+		console.log(activePicklist);
+	}, [activePicklist]);
+
 	const handleBackOnClick = () => {
+		setActivePicklistId("");
 		navigate(`/events`);
 	};
+
+	const handleAddTeam = () => {
+		console.log("Add Team Clicked");
+	};
+
+	console.log("teams", activePicklist?.teams);
+
 	return (
 		<>
 			<TopBar onClickBack={handleBackOnClick} />
 			<Page>
 				<Stack width="100%" paddingBottom="60px" paddingTop="60px">
-					<Typography>TextA</Typography>
-					<Typography>TextB</Typography>
-					<Typography>TextC</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text</Typography>
-					<Typography>Text5</Typography>
-					<Typography>Text4</Typography>
-					<Typography>Text3</Typography>
-					<Typography>Text2</Typography>
-					<Typography>Text1</Typography>
+					{activePicklist?.teams ? (
+						<TeamList picklist={activePicklist} />
+					) : (
+						<Typography>List not found or user missing permissions</Typography>
+					)}
 				</Stack>
+				<FloatingButton text="Add Team" bottomMenu extended onClick={handleAddTeam} />
 			</Page>
 			<BottomBar />
 		</>

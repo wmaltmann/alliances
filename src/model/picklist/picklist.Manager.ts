@@ -1,6 +1,15 @@
+import { Location } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { readFbDb, subscribeFbDb, updateFbDb } from "../../libs/FirebaseLib";
-import { Picklist, PicklistPermission } from "./picklist.Model";
+import { getPickListIdFromPath } from "../../libs/Utills";
+import {
+	FbDbPicklist,
+	FbDBTeam,
+	Picklist,
+	PicklistCore,
+	PicklistPermission,
+	Team,
+} from "./picklist.Model";
 
 export const createPicklist = async (userId: string, picklistName: string) => {
 	const plid = uuidv4();
@@ -51,7 +60,7 @@ export const getUserPicklists = async (userId: string) => {
 						permission = "member";
 					}
 
-					const data: Picklist = {
+					const data: PicklistCore = {
 						id: plid,
 						name: picklistData.name,
 						permission: permission,
@@ -60,7 +69,7 @@ export const getUserPicklists = async (userId: string) => {
 				}
 			} catch (error) {
 				// If readFbDb fails, skip this picklist
-				const data: Picklist = {
+				const data: PicklistCore = {
 					id: plid,
 					name: "Access denied",
 					permission: "none",
@@ -75,9 +84,43 @@ export const getUserPicklists = async (userId: string) => {
 
 export const listenToPicklist = (
 	picklistId: string,
-	setActivePicklist: React.Dispatch<React.SetStateAction<Picklist | undefined>>,
+	setActivePicklist: (picklist: FbDbPicklist) => void,
 ) => {
 	if (!picklistId) return undefined;
 
 	return subscribeFbDb(`/picklists/${picklistId}`, setActivePicklist);
+};
+
+export const loadPicklist = (
+	location: Location,
+	setActivePicklistId: React.Dispatch<React.SetStateAction<string>>,
+) => {
+	const picklistId = getPickListIdFromPath(location.pathname);
+	setActivePicklistId(picklistId);
+};
+
+export const migratePicklist = (fbDbPicklist: FbDbPicklist) => {
+	const picklist: Picklist = {
+		id: "",
+		name: fbDbPicklist.name,
+		permission: "owner",
+		teams: sortTeamsByListPosition(convertFbDBTeamsToTeams(fbDbPicklist.teams)),
+		members: [],
+		owners: [],
+	};
+
+	return picklist;
+};
+
+const convertFbDBTeamsToTeams = (fbDBTeams: { [key: string]: FbDBTeam }): Team[] => {
+	return Object.entries(fbDBTeams).map(([key, team]) => ({
+		number: key,
+		name: team.name,
+		category: team.category,
+		listPosition: team.listPosition,
+	}));
+};
+
+const sortTeamsByListPosition = (teams: Team[]): Team[] => {
+	return teams.sort((a, b) => a.listPosition - b.listPosition);
 };
