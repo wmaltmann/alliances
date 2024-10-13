@@ -24,7 +24,7 @@ const TeamList = memo(({ picklist, onDragEnd }: TeamListProps) => {
 								draggableId={String(team.number)}
 								index={index}
 							>
-								{(provided) => (
+								{(provided, snapshot) => (
 									<ListItem
 										ref={provided.innerRef}
 										{...provided.draggableProps}
@@ -36,6 +36,9 @@ const TeamList = memo(({ picklist, onDragEnd }: TeamListProps) => {
 											margin: theme.spacing(1),
 											paddingTop: theme.spacing(1),
 											paddingBottom: theme.spacing(1),
+											bgcolor: snapshot.isDragging
+												? "background.paper"
+												: "default",
 										}}
 									>
 										<TeamChip
