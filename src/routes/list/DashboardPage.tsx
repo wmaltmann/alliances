@@ -1,9 +1,9 @@
 import { Box, Stack } from "@mui/material";
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
-import BottomBar from "../components/page/BottomBar";
-import Page from "../components/page/Page";
-import TopBar from "../components/page/TopBar";
+import BottomBar from "../../components/page/BottomBar";
+import Page from "../../components/page/Page";
+import TopBar from "../../components/page/TopBar";
 
 const DashboardPage: FC = () => {
 	const navigate = useNavigate();

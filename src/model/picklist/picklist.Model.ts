@@ -32,4 +32,4 @@ export interface FbDBTeam {
 	listPosition: number;
 }
 
-export type TeamCategory = "pick" | "neutral" | "doNotPick" | undefined;
+export type TeamCategory = "pick" | "neutral" | "doNotPick" | "unassigned";

@@ -1,12 +1,12 @@
 import { Stack } from "@mui/material";
 import { FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppContext } from "../app/AppContext";
-import ASButton from "../components/common/ASButton";
-import ASTextField from "../components/common/ASTextField";
-import Page from "../components/page/Page";
-import TopBar from "../components/page/TopBar";
-import { createPicklist } from "../model/picklist/picklist.Manager";
+import { useAppContext } from "../../app/AppContext";
+import ASButton from "../../components/common/ASButton";
+import ASTextField from "../../components/common/ASTextField";
+import Page from "../../components/page/Page";
+import TopBar from "../../components/page/TopBar";
+import { createPicklist } from "../../model/picklist/picklist.Manager";
 
 const CreateListPage: FC = () => {
 	const navigate = useNavigate();

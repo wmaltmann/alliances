@@ -1,11 +1,11 @@
 import { Avatar, Stack, Typography, useTheme } from "@mui/material";
 import { FC, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppContext } from "../app/AppContext";
-import EventList from "../components/common/EventList";
-import FloatingButton from "../components/common/FloatingButton";
-import Page from "../components/page/Page";
-import { getUserPicklists } from "../model/picklist/picklist.Manager";
+import { useAppContext } from "../../app/AppContext";
+import EventList from "../../components/common/EventList";
+import FloatingButton from "../../components/common/FloatingButton";
+import Page from "../../components/page/Page";
+import { getUserPicklists } from "../../model/picklist/picklist.Manager";
 
 const ListsPage: FC = () => {
 	const navigate = useNavigate();

@@ -1,9 +1,9 @@
 import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from "@hello-pangea/dnd";
-import { DragIndicator } from "@mui/icons-material";
-import { List, ListItem, Typography, useTheme } from "@mui/material";
+import { List, ListItem, useTheme } from "@mui/material";
 import { memo } from "react";
-import { Picklist } from "../../model/picklist/picklist.Model";
-import TeamChip from "./TeamChip";
+import { Picklist, Team } from "../../model/picklist/picklist.Model";
+import TeamDivider from "./TeamDivider";
+import TeamListItem from "./TeamListItem";
 
 interface TeamListProps {
 	picklist: Picklist;
@@ -13,12 +13,37 @@ interface TeamListProps {
 const TeamList = memo(({ picklist, onDragEnd }: TeamListProps) => {
 	const theme = useTheme();
 
+	const addDividers = (teams: Team[]): Team[] => {
+		const result: Team[] = [];
+		let dividerCount = 1;
+
+		for (let i = 0; i < teams.length; i++) {
+			const currentTeam = teams[i];
+			const previousTeam = result[result.length - 1];
+
+			// If the category is different from the previous one, add a divider
+			if (i === 0 || previousTeam.category !== currentTeam.category) {
+				result.push({
+					number: `D${dividerCount++}`, // Dynamic divider number for each new category
+					name: currentTeam.category, // Name the divider based on the upcoming category
+					category: currentTeam.category, // Continue with the new category
+					listPosition: -1, // Divider indicator
+				});
+			}
+
+			// Add the current team to the result
+			result.push(currentTeam);
+		}
+
+		return result;
+	};
+
 	return (
 		<DragDropContext onDragEnd={onDragEnd}>
 			<Droppable droppableId="teamList">
 				{(provided) => (
 					<List ref={provided.innerRef} {...provided.droppableProps}>
-						{picklist.teams.map((team, index) => (
+						{addDividers(picklist.teams).map((team, index) => (
 							<Draggable
 								key={team.number}
 								draggableId={String(team.number)}
@@ -39,15 +64,14 @@ const TeamList = memo(({ picklist, onDragEnd }: TeamListProps) => {
 											bgcolor: snapshot.isDragging
 												? "background.paper"
 												: "default",
+											borderRadius: "20px",
 										}}
 									>
-										<TeamChip
-											text={team.listPosition.toString()}
-											teamCategory={team.category}
-										/>
-										<Typography>{team.number}</Typography>
-										<Typography>{team.name}</Typography>
-										<DragIndicator />
+										{team.listPosition < 0 ? (
+											<TeamDivider teamCategory={team.category} />
+										) : (
+											<TeamListItem team={team} />
+										)}
 									</ListItem>
 								)}
 							</Draggable>

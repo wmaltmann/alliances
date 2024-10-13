@@ -27,6 +27,22 @@ declare module "@mui/material/styles" {
 		error2?: React.CSSProperties;
 		body3?: React.CSSProperties;
 	}
+	interface Palette {
+		chip: {
+			pick: string;
+			neutral: string;
+			doNotPick: string;
+			unassigned: string;
+		};
+	}
+	interface PaletteOptions {
+		chip?: {
+			pick?: string;
+			neutral?: string;
+			doNotPick?: string;
+			unassigned?: string;
+		};
+	}
 }
 
 declare module "@mui/material/Typography" {
@@ -131,6 +147,12 @@ export const themeDark = createTheme({
 		background: {
 			default: "#0f0f0f",
 			paper: "#2B2B2B",
+		},
+		chip: {
+			pick: "#006600",
+			neutral: "#856F00",
+			doNotPick: "#A30000",
+			unassigned: "#595959",
 		},
 	},
 	typography: typography,

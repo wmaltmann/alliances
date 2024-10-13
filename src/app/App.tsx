@@ -1,20 +1,21 @@
 import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { autoLogin } from "../libs/AuthLib";
 import { fbAuth } from "../libs/FirebaseLib";
 import { listenToPicklist } from "../model/picklist/picklist.Manager";
-import AlliancesPage from "../routes/AlliancesPage";
-import DashboardPage from "../routes/DashboardPage";
-import ListPage from "../routes/ListPage";
-import ListsPage from "../routes/ListsPage";
-import LoginPage from "../routes/LoginPage";
-import NewListPage from "../routes/NewListPage";
-import PasswordlessLoginPage from "../routes/PasswordlessLoginPage";
-import ProfilePage from "../routes/ProfilePage";
-import SharePage from "../routes/SharePage";
-import SignUpPage from "../routes/SignUpPage";
-import VerifyEmailPage from "../routes/VerifyEmailPage";
+import AddTeamPage from "../routes/list/AddTeamPage";
+import AlliancesPage from "../routes/list/AlliancesPage";
+import DashboardPage from "../routes/list/DashboardPage";
+import ListPage from "../routes/list/ListPage";
+import SharePage from "../routes/list/SharePage";
+import ListsPage from "../routes/lists/ListsPage";
+import NewListPage from "../routes/lists/NewListPage";
+import ProfilePage from "../routes/lists/ProfilePage";
+import LoginPage from "../routes/login/LoginPage";
+import PasswordlessLoginPage from "../routes/login/PasswordlessLoginPage";
+import SignUpPage from "../routes/login/SignUpPage";
+import VerifyEmailPage from "../routes/login/VerifyEmailPage";
 import { useAppContext } from "./AppContext";
 
 function App() {
@@ -60,7 +61,7 @@ function App() {
 						<Route path="/:id/dashboard" element={<DashboardPage />} />
 						<Route path="/:id/alliances" element={<AlliancesPage />} />
 						<Route path="/:id/share" element={<SharePage />} />
-						<Route path="*" element={<Navigate to="/lists" />} />
+						<Route path="/:id/addteam" element={<AddTeamPage />} />
 					</>
 				) : (
 					<>

@@ -1,11 +1,11 @@
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
-import BottomBar from "../components/page/BottomBar";
-import Page from "../components/page/Page";
-import TopBar from "../components/page/TopBar";
+import BottomBar from "../../components/page/BottomBar";
+import Page from "../../components/page/Page";
+import TopBar from "../../components/page/TopBar";
 
-const SharePage: FC = () => {
+const BracketPage: FC = () => {
 	const navigate = useNavigate();
 	const handleBackOnClick = () => {
 		navigate(`/events`);
@@ -15,7 +15,7 @@ const SharePage: FC = () => {
 			<TopBar onClickBack={handleBackOnClick} />
 			<Page>
 				<Stack width="100%" paddingBottom="60px" paddingTop="60px">
-					<Typography>Share</Typography>
+					<Typography>Alliances</Typography>
 				</Stack>
 			</Page>
 			<BottomBar />
@@ -23,4 +23,4 @@ const SharePage: FC = () => {
 	);
 };
 
-export default SharePage;
+export default BracketPage;

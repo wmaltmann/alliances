@@ -1,11 +1,11 @@
 import { Stack, Typography, useTheme } from "@mui/material";
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppContext } from "../app/AppContext";
-import ASButton from "../components/common/ASButton";
-import Page from "../components/page/Page";
-import TopBar from "../components/page/TopBar";
-import { signOut } from "../libs/AuthLib";
+import { useAppContext } from "../../app/AppContext";
+import ASButton from "../../components/common/ASButton";
+import Page from "../../components/page/Page";
+import TopBar from "../../components/page/TopBar";
+import { signOut } from "../../libs/AuthLib";
 
 const ProfilePage: FC = () => {
 	const appContextData = useAppContext();
