@@ -9,7 +9,11 @@ export interface AppContextData {
 	setUser: React.Dispatch<React.SetStateAction<User | undefined>>;
 	lists: {
 		activePicklist: Picklist | undefined;
-		setActivePicklist: (picklist: FbDbPicklist) => void;
+		setActivePicklist: (
+			loadingPicklistId: string,
+			picklist: FbDbPicklist | undefined,
+			userId: string | undefined,
+		) => void;
 		activePicklistId: string;
 		setActivePicklistId: React.Dispatch<React.SetStateAction<string>>;
 		picklists: PicklistCore[] | undefined;
@@ -32,8 +36,12 @@ export const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children
 	const [bottomBarState, setBottomBarState] = useState<number>(0);
 	const alerts = new Alerts();
 
-	const stuff = (picklist: FbDbPicklist) => {
-		setActivePicklist(migratePicklist(picklist));
+	const stuff = (
+		loadingPicklistId: string,
+		picklist: FbDbPicklist | undefined,
+		userId: string | undefined,
+	) => {
+		setActivePicklist(migratePicklist(loadingPicklistId, userId, picklist));
 	};
 
 	const contextValue: AppContextData = {

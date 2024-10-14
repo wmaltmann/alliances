@@ -1,6 +1,6 @@
 import { Location } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import { readFbDb, subscribeFbDb, updateFbDb } from "../../libs/FirebaseLib";
+import { readFbDb, subscribeToFbDbPicklist, updateFbDb } from "../../libs/FirebaseLib";
 import { getPickListIdFromPath } from "../../libs/Utills";
 import {
 	FbDbPicklist,
@@ -84,11 +84,16 @@ export const getUserPicklists = async (userId: string) => {
 
 export const listenToPicklist = (
 	picklistId: string,
-	setActivePicklist: (picklist: FbDbPicklist) => void,
+	setActivePicklist: (
+		loadingPicklistId: string,
+		picklist: FbDbPicklist | undefined,
+		userId: string | undefined,
+	) => void,
+	userId: string | undefined,
 ) => {
 	if (!picklistId) return undefined;
 
-	return subscribeFbDb(`/picklists/${picklistId}`, setActivePicklist);
+	return subscribeToFbDbPicklist(picklistId, setActivePicklist, userId);
 };
 
 export const loadPicklist = (
@@ -99,17 +104,34 @@ export const loadPicklist = (
 	setActivePicklistId(picklistId);
 };
 
-export const migratePicklist = (fbDbPicklist: FbDbPicklist) => {
+export const migratePicklist = (
+	activePicklistId: string,
+	userId: string | undefined,
+	fbDbPicklist: FbDbPicklist | undefined,
+) => {
+	if (!fbDbPicklist) throw new Error("Picklist undefined");
+	const members = Object.keys(fbDbPicklist.members);
+	const owners = Object.keys(fbDbPicklist.owners);
+	const permission = checkUserRole(userId || "", members, owners);
 	const picklist: Picklist = {
-		id: "",
+		id: activePicklistId,
 		name: fbDbPicklist.name,
-		permission: "owner",
+		permission: permission,
 		teams: sortTeamsByListPosition(convertFbDBTeamsToTeams(fbDbPicklist.teams)),
-		members: [],
-		owners: [],
+		members: members,
+		owners: owners,
 	};
-
 	return picklist;
+};
+
+const checkUserRole = (userId: string, members: string[], owners: string[]): PicklistPermission => {
+	if (members.includes(userId)) {
+		return "member";
+	} else if (owners.includes(userId)) {
+		return "owner";
+	} else {
+		return "none";
+	}
 };
 
 const convertFbDBTeamsToTeams = (fbDBTeams: { [key: string]: FbDBTeam }): Team[] => {
@@ -123,4 +145,18 @@ const convertFbDBTeamsToTeams = (fbDBTeams: { [key: string]: FbDBTeam }): Team[]
 
 const sortTeamsByListPosition = (teams: Team[]): Team[] => {
 	return teams.sort((a, b) => a.listPosition - b.listPosition);
+};
+
+export const addTeamToPicklist = async (
+	activePicklist: Picklist,
+	teamName: string,
+	teamNumber: string,
+) => {
+	const newTeam: Team = {
+		number: teamNumber,
+		name: teamName,
+		listPosition: activePicklist.teams.length + 1,
+		category: "unassigned",
+	};
+	await updateFbDb(`/picklists/${activePicklist.id}/teams/${teamNumber}`, newTeam);
 };

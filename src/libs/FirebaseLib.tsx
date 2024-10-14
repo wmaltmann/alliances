@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { get, getDatabase, onValue, ref, set, update } from "firebase/database";
 import { getAppStage } from "../app/AppUtils";
+import { FbDbPicklist } from "../model/picklist/picklist.Model";
 
 const DEV_CONFIG = {
 	apiKey: "AIzaSyADZYyWAe6YydGBcrTfoTgJNyoJoLBsVh4",
@@ -51,16 +52,20 @@ export const updateFbDb = async (path: string, data: any) => {
 	await update(dbRef, data);
 };
 
-export const subscribeFbDb = (
-	path: string,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	setData: (data: any) => void,
+export const subscribeToFbDbPicklist = (
+	pickListId: string,
+	setData: (
+		loadingPicklistId: string,
+		picklist: FbDbPicklist | undefined,
+		userId: string | undefined,
+	) => void,
+	userId: string | undefined,
 ): (() => void) | undefined => {
-	const unsubscribe = onValue(ref(fbDb, path), (snapshot) => {
+	const unsubscribe = onValue(ref(fbDb, `/picklists/${pickListId}`), (snapshot) => {
 		if (snapshot.exists()) {
-			setData(snapshot.val());
+			setData(pickListId, snapshot.val(), userId);
 		} else {
-			setData(undefined);
+			setData(pickListId, undefined, userId);
 		}
 	});
 

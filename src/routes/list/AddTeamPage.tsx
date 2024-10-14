@@ -6,11 +6,12 @@ import ASButton from "../../components/common/ASButton";
 import ASTextField from "../../components/common/ASTextField";
 import Page from "../../components/page/Page";
 import TopBar from "../../components/page/TopBar";
+import { addTeamToPicklist } from "../../model/picklist/picklist.Manager";
 
 const AddTeamPage: FC = () => {
 	const navigate = useNavigate();
 	const {
-		lists: { activePicklistId },
+		lists: { activePicklistId, activePicklist },
 		alerts,
 	} = useAppContext();
 	const [name, setName] = useState<string>("");
@@ -26,18 +27,19 @@ const AddTeamPage: FC = () => {
 
 	const handleCreatePicklist = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		if (activePicklistId) {
+		if (activePicklist) {
+			console.log("apl", activePicklist);
 			try {
-				//TODO add team
-				navigate(`/${activePicklistId}/list`);
+				await addTeamToPicklist(activePicklist, name, number);
+				navigate(`/${activePicklist.id}/list`);
 			} catch (error) {
 				console.log(error);
 				alerts.addAlert("error", "Failed to add team", 15);
-				navigate(`/${activePicklistId}/list`);
+				navigate(`/${activePicklist.id}/list`);
 			}
 		} else {
 			alerts.addAlert("error", "Picklist not found", 15);
-			navigate(`/${activePicklistId}/list`);
+			navigate(-1);
 		}
 	};
 

@@ -40,6 +40,7 @@ function App() {
 		const unsubscribe = listenToPicklist(
 			appContextData.lists.activePicklistId,
 			appContextData.lists.setActivePicklist,
+			appContextData.user?.id,
 		);
 
 		return () => {
@@ -47,7 +48,7 @@ function App() {
 				unsubscribe();
 			}
 		};
-	}, [appContextData.lists.activePicklistId]);
+	}, [appContextData.lists.activePicklistId, appContextData?.user?.id]);
 
 	return (
 		<Router>
