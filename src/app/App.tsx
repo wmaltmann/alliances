@@ -63,6 +63,7 @@ function App() {
 						<Route path="/:id/alliances" element={<AlliancesPage />} />
 						<Route path="/:id/share" element={<SharePage />} />
 						<Route path="/:id/addteam" element={<AddTeamPage />} />
+						<Route path="*" element={<ListsPage />} />
 					</>
 				) : (
 					<>

@@ -82,21 +82,72 @@ const TeamList = memo(({ picklist }: TeamListProps) => {
 		}));
 	};
 
+	const moveDividerUpAndUpdateTeams = (
+		arr: Team[],
+		startIndex: number,
+		endIndex: number,
+	): Team[] => {
+		const result = [...arr];
+		const [movedDivider] = result.splice(startIndex, 1);
+
+		if (!movedDivider.number.startsWith("D")) {
+			throw new Error("The moved item is not a divider.");
+		}
+
+		result.splice(endIndex, 0, movedDivider);
+
+		const newCategory = movedDivider.category;
+
+		for (let i = endIndex + 1; i < result.length; i++) {
+			if (!result[i].number.startsWith("D")) {
+				result[i].category = newCategory;
+			}
+		}
+
+		return result;
+	};
+
+	const moveDividerDownAndUpdateTeams = (
+		arr: Team[],
+		startIndex: number,
+		endIndex: number,
+	): Team[] => {
+		const result = [...arr];
+		const [movedDivider] = result.splice(startIndex, 1);
+
+		result.splice(endIndex, 0, movedDivider);
+
+		const newCategory = movedDivider.category;
+
+		for (let i = endIndex; i >= startIndex; i--) {
+			if (!result[i].number.startsWith("D")) {
+				result[i].category = newCategory;
+			}
+		}
+		return result;
+	};
+
 	const onDragEnd = async (result: DropResult<string>) => {
+		const startIndex = result.source.index;
+		const endIndex = result.destination?.index || result.source.index;
+		if (startIndex === endIndex) {
+			return;
+		}
 		if (result.draggableId.startsWith("D")) {
-			// divider
+			if (startIndex > endIndex) {
+				const newList = removeDividers(
+					moveDividerUpAndUpdateTeams(teamList, startIndex, endIndex),
+				);
+				await updatePicklistOrder(picklist.id, newList);
+			} else {
+				const newList = removeDividers(
+					moveDividerDownAndUpdateTeams(teamList, startIndex, endIndex),
+				);
+				await updatePicklistOrder(picklist.id, newList);
+			}
 		} else {
 			const newList = updateListPositions(
-				removeDividers(
-					updateCategory(
-						moveTeam(
-							teamList,
-							result.source.index,
-							result.destination?.index || result.source.index,
-						),
-						result.destination?.index || result.source.index,
-					),
-				),
+				removeDividers(updateCategory(moveTeam(teamList, startIndex, endIndex), endIndex)),
 			);
 			await updatePicklistOrder(picklist.id, newList);
 		}
