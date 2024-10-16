@@ -110,14 +110,16 @@ export const migratePicklist = (
 	fbDbPicklist: FbDbPicklist | undefined,
 ) => {
 	if (!fbDbPicklist) throw new Error("Picklist undefined");
-	const members = Object.keys(fbDbPicklist.members);
-	const owners = Object.keys(fbDbPicklist.owners);
+	const members = fbDbPicklist.members ? Object.keys(fbDbPicklist.members) : [];
+	const owners = fbDbPicklist.owners ? Object.keys(fbDbPicklist.owners) : [];
 	const permission = checkUserRole(userId || "", members, owners);
 	const picklist: Picklist = {
 		id: activePicklistId,
 		name: fbDbPicklist.name,
 		permission: permission,
-		teams: sortTeamsByListPosition(convertFbDBTeamsToTeams(fbDbPicklist.teams)),
+		teams: fbDbPicklist.teams
+			? sortTeamsByListPosition(convertFbDBTeamsToTeams(fbDbPicklist.teams))
+			: [],
 		members: members,
 		owners: owners,
 	};
