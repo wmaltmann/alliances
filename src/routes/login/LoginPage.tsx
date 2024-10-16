@@ -1,13 +1,13 @@
 import { Divider, Stack, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppContext } from "../app/AppContext";
-import SignInWithGoogleButton from "../assets/google/web_light_sq_SI.svg";
-import ASButton from "../components/common/ASButton";
-import ASLink from "../components/common/ASLink";
-import ASTextField from "../components/common/ASTextField";
-import Page from "../components/page/Page";
-import { loginWithPassword, signInWithGoogle } from "../libs/AuthLib";
+import { useAppContext } from "../../app/AppContext";
+import SignInWithGoogleButton from "../../assets/google/web_light_sq_SI.svg";
+import ASButton from "../../components/common/ASButton";
+import ASLink from "../../components/common/ASLink";
+import ASTextField from "../../components/common/ASTextField";
+import Page from "../../components/page/Page";
+import { loginWithPassword, signInWithGoogle } from "../../libs/AuthLib";
 
 export const LoginPage = () => {
 	const theme = useTheme();

@@ -1,19 +1,27 @@
 import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { autoLogin } from "../libs/AuthLib";
 import { fbAuth } from "../libs/FirebaseLib";
-import LoginPage from "../routes/LoginPage";
-import PasswordlessLoginPage from "../routes/PasswordlessLoginPage";
-import PickListPage from "../routes/PickListPage";
-import ProfilePage from "../routes/ProfilePage";
-import SignUpPage from "../routes/SignUpPage";
-import VerifyEmailPage from "../routes/VerifyEmailPage";
+import { listenToPicklist } from "../model/picklist/picklist.Manager";
+import AddTeamPage from "../routes/list/AddTeamPage";
+import AlliancesPage from "../routes/list/AlliancesPage";
+import DashboardPage from "../routes/list/DashboardPage";
+import ListPage from "../routes/list/ListPage";
+import SharePage from "../routes/list/SharePage";
+import ListsPage from "../routes/lists/ListsPage";
+import NewListPage from "../routes/lists/NewListPage";
+import ProfilePage from "../routes/lists/ProfilePage";
+import LoginPage from "../routes/login/LoginPage";
+import PasswordlessLoginPage from "../routes/login/PasswordlessLoginPage";
+import SignUpPage from "../routes/login/SignUpPage";
+import VerifyEmailPage from "../routes/login/VerifyEmailPage";
 import { useAppContext } from "./AppContext";
 
 function App() {
 	const appContextData = useAppContext();
 	const [user] = useAuthState(fbAuth);
+	const authenticated = user?.emailVerified;
 
 	useEffect(() => {
 		const authenticate = async () => {
@@ -28,16 +36,34 @@ function App() {
 		void authenticate();
 	}, [user]);
 
+	useEffect(() => {
+		const unsubscribe = listenToPicklist(
+			appContextData.lists.activePicklistId,
+			appContextData.lists.setActivePicklist,
+			appContextData.user?.id,
+		);
+
+		return () => {
+			if (unsubscribe) {
+				unsubscribe();
+			}
+		};
+	}, [appContextData.lists.activePicklistId, appContextData?.user?.id]);
+
 	return (
 		<Router>
 			<Routes>
-				{appContextData.user ? (
+				{authenticated ? (
 					<>
 						<Route path="/profile" element={<ProfilePage />} />
-						<Route path="/login" element={<LoginPage />} />
-						<Route path="/signup" element={<SignUpPage />} />
-						<Route path="/verifyemail" element={<VerifyEmailPage />} />
-						<Route path="*" element={<PickListPage />} />
+						<Route path="/lists" element={<ListsPage />} />
+						<Route path="/newlist" element={<NewListPage />} />
+						<Route path="/:id/list" element={<ListPage />} />
+						<Route path="/:id/dashboard" element={<DashboardPage />} />
+						<Route path="/:id/alliances" element={<AlliancesPage />} />
+						<Route path="/:id/share" element={<SharePage />} />
+						<Route path="/:id/addteam" element={<AddTeamPage />} />
+						<Route path="*" element={<ListsPage />} />
 					</>
 				) : (
 					<>
@@ -45,7 +71,7 @@ function App() {
 						<Route path="/signup" element={<SignUpPage />} />
 						<Route path="/verifyemail" element={<VerifyEmailPage />} />
 						<Route path="/passwordlesslogin" element={<PasswordlessLoginPage />} />
-						<Route path="*" element={<Navigate to="/login" />} />
+						<Route path="*" element={<LoginPage />} />
 					</>
 				)}
 			</Routes>
