@@ -1,10 +1,10 @@
 import { Stack, Typography, useTheme } from "@mui/material";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppContext } from "../app/AppContext";
-import ASLink from "../components/common/ASLink";
-import Page from "../components/page/Page";
-import { sendVerifyEmail } from "../libs/AuthLib";
+import { useAppContext } from "../../app/AppContext";
+import ASLink from "../../components/common/ASLink";
+import Page from "../../components/page/Page";
+import { sendVerifyEmail } from "../../libs/AuthLib";
 
 export const VerifyEmailPage = () => {
 	const theme = useTheme();

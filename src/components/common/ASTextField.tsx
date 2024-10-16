@@ -1,5 +1,5 @@
 import { KeyboardCapslock, Visibility, VisibilityOff } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
+import { IconButton, useTheme } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import React, { useEffect, useState } from "react";
 
@@ -30,6 +30,7 @@ const EmailField: React.FC<EmailFieldProps> = ({
 }) => {
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 	const [isCapsLockOn, setIsCapsLockOn] = useState(false);
+	const theme = useTheme();
 
 	useEffect(() => {
 		const handleKeyDown = (event: KeyboardEvent) => {
@@ -74,6 +75,10 @@ const EmailField: React.FC<EmailFieldProps> = ({
 			fullWidth={fullWidth}
 			helperText={error}
 			error={!!error}
+			sx={{
+				backgroundColor: theme.palette.background.paper,
+				borderRadius: "4px",
+			}}
 			InputProps={{
 				endAdornment: (
 					<>

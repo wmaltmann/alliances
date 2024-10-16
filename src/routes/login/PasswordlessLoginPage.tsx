@@ -3,14 +3,14 @@ import { Link, Stack, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAppContext } from "../app/AppContext";
-import ASButton from "../components/common/ASButton";
-import ASTextField from "../components/common/ASTextField";
-import BorderBox from "../components/common/BorderBox";
-import Loading from "../components/common/Loading";
-import Page from "../components/page/Page";
-import { getAuthEmail, loginWithLink, passwordlessLogin } from "../libs/AuthLib";
-import { fbAuth } from "../libs/FirebaseLib";
+import { useAppContext } from "../../app/AppContext";
+import ASButton from "../../components/common/ASButton";
+import ASTextField from "../../components/common/ASTextField";
+import BorderBox from "../../components/common/BorderBox";
+import Loading from "../../components/common/Loading";
+import Page from "../../components/page/Page";
+import { getAuthEmail, loginWithLink, passwordlessLogin } from "../../libs/AuthLib";
+import { fbAuth } from "../../libs/FirebaseLib";
 
 export const LoginPage = () => {
 	const [user] = useAuthState(fbAuth);

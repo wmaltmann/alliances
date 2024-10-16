@@ -1,119 +1,60 @@
-import { AccountCircle, Menu as MenuIcon } from "@mui/icons-material";
-import { AppBar, Button, IconButton, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
-import { FC, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAppContext } from "../../app/AppContext";
-import { getAppStage } from "../../app/AppUtils";
-import { signOut } from "../../libs/AuthLib";
+import { ArrowBackIosNew, FilterList } from "@mui/icons-material";
+import { AppBar, IconButton, TextField, Toolbar, Typography, useTheme } from "@mui/material";
+import React from "react";
 
-enum MenuOptions {
-	About = "About",
-	Profile = "Profile",
-	Home = "Home",
+interface TopBarProps {
+	onClickBack: React.MouseEventHandler<HTMLButtonElement>;
+	headerText?: string;
+	variant?: "back" | "filter" | "header";
 }
 
-const TopBar: FC = () => {
-	const appContextData = useAppContext();
-	const navigate = useNavigate();
-	const stage = getAppStage();
-
-	const handleLoginClick = () => {
-		navigate("/login");
-	};
-
-	const handleLogoutClick = async () => {
-		try {
-			await signOut(appContextData);
-			navigate("/");
-		} catch (error) {
-			console.error("Error logging out:", error);
-		}
-	};
-
-	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-	const open = Boolean(anchorEl);
-	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-		setAnchorEl(event.currentTarget);
-	};
-	const handleClose = (menuOption: MenuOptions) => {
-		setAnchorEl(null);
-		switch (menuOption) {
-			case MenuOptions.About:
-				navigate("/about");
-				break;
-			case MenuOptions.Profile:
-				navigate("/profile");
-				break;
-			case MenuOptions.Home:
-				navigate("/");
-				break;
-			default:
-				break;
-		}
-	};
+const TopBar: React.FC<TopBarProps> = ({ onClickBack, variant = "back", headerText = "" }) => {
+	const theme = useTheme();
 	return (
-		<AppBar position="static">
+		<AppBar
+			position="fixed"
+			sx={{
+				top: 0,
+				left: 0,
+				right: 0,
+				zIndex: 1000,
+				height: "60px",
+				backgroundColor: theme.palette.background.default,
+				color: theme.palette.text.primary,
+			}}
+		>
 			<Toolbar>
-				<IconButton
-					size="large"
-					edge="start"
-					color="inherit"
-					aria-label="menu"
-					sx={{ mr: 2 }}
-					onClick={handleClick}
-				>
-					<MenuIcon />
+				<IconButton edge="start" color="primary" aria-label="back" onClick={onClickBack}>
+					<ArrowBackIosNew />
 				</IconButton>
-				<Typography variant="h1" component="div" sx={{ flexGrow: 1 }}>
-					{stage === "beta"
-						? "Alliance Selector Beta"
-						: stage === "local"
-							? "Alliance Selector Local"
-							: "Alliance Selector"}
-				</Typography>
-				{appContextData.user ? (
+				{variant === "header" && (
+					<Typography
+						variant="h2"
+						color="primary.main"
+						sx={{ flexGrow: 1, textAlign: "center" }}
+						paddingRight="40px"
+					>
+						{headerText}
+					</Typography>
+				)}
+				{variant === "filter" && (
 					<>
-						<AccountCircle />
-						<Button color="inherit" onClick={handleLogoutClick}>
-							Logout
-						</Button>
+						<TextField
+							variant="outlined"
+							placeholder="Search"
+							sx={{ flexGrow: 1, marginX: 2 }}
+							InputProps={{
+								inputProps: {
+									style: { textAlign: "center" },
+								},
+							}}
+						/>
+						<IconButton edge="end" aria-label="filter" color="primary">
+							<FilterList />
+						</IconButton>
 					</>
-				) : (
-					<Button color="inherit" onClick={handleLoginClick}>
-						Login
-					</Button>
 				)}
 			</Toolbar>
-			<Menu
-				id="basic-menu"
-				open={open}
-				anchorEl={anchorEl}
-				onClose={handleClose}
-				MenuListProps={{
-					"aria-labelledby": "basic-button",
-				}}
-			>
-				{appContextData.user
-					? [
-							<MenuItem
-								key="profile"
-								onClick={() => handleClose(MenuOptions.Profile)}
-							>
-								Profile
-							</MenuItem>,
-							<MenuItem key="about" onClick={() => handleClose(MenuOptions.About)}>
-								About
-							</MenuItem>,
-						]
-					: [
-							<MenuItem key="home" onClick={() => handleClose(MenuOptions.Home)}>
-								Home
-							</MenuItem>,
-							<MenuItem key="about" onClick={() => handleClose(MenuOptions.About)}>
-								About
-							</MenuItem>,
-						]}
-			</Menu>
 		</AppBar>
 	);
 };
