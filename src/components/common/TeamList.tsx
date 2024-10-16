@@ -1,41 +1,105 @@
-import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from "@hello-pangea/dnd";
+import { DragDropContext, Draggable, Droppable, DropResult } from "@hello-pangea/dnd";
 import { List, ListItem, useTheme } from "@mui/material";
-import { memo } from "react";
-import { Picklist, Team } from "../../model/picklist/picklist.Model";
+import { memo, useEffect, useState } from "react";
+import { updatePicklistOrder } from "../../model/picklist/picklist.Manager";
+import { Picklist, Team, TeamCategory } from "../../model/picklist/picklist.Model";
 import TeamDivider from "./TeamDivider";
 import TeamListItem from "./TeamListItem";
 
 interface TeamListProps {
 	picklist: Picklist;
-	onDragEnd: OnDragEndResponder;
 }
 
-const TeamList = memo(({ picklist, onDragEnd }: TeamListProps) => {
+const TeamList = memo(({ picklist }: TeamListProps) => {
 	const theme = useTheme();
+	const [teamList, setTeamList] = useState<Team[]>([]);
 
-	const addDividers = (teams: Team[]): Team[] => {
-		const result: Team[] = [];
-		let dividerCount = 1;
+	useEffect(() => {
+		const addDividers = (teams: Team[]): Team[] => {
+			const result: Team[] = [];
+			let dividerCount = 1;
 
-		for (let i = 0; i < teams.length; i++) {
-			const currentTeam = teams[i];
-			const previousTeam = result[result.length - 1];
+			const categories: TeamCategory[] = ["pick", "neutral", "doNotPick", "unassigned"];
 
-			// If the category is different from the previous one, add a divider
-			if (i === 0 || previousTeam.category !== currentTeam.category) {
+			const teamsByCategory: { [key in TeamCategory]?: Team[] } = teams.reduce(
+				(acc, team) => {
+					if (!acc[team.category]) {
+						acc[team.category] = [];
+					}
+					acc[team.category]!.push(team);
+					return acc;
+				},
+				{} as { [key in TeamCategory]?: Team[] },
+			);
+
+			for (const category of categories) {
 				result.push({
-					number: `D${dividerCount++}`, // Dynamic divider number for each new category
-					name: currentTeam.category, // Name the divider based on the upcoming category
-					category: currentTeam.category, // Continue with the new category
-					listPosition: -1, // Divider indicator
+					number: `D${dividerCount++}`,
+					name: category,
+					category: category,
+					listPosition: -1,
 				});
+				if (teamsByCategory[category]) {
+					result.push(...teamsByCategory[category]!);
+				}
 			}
 
-			// Add the current team to the result
-			result.push(currentTeam);
+			return result;
+		};
+		setTeamList(addDividers(picklist.teams));
+	}, [picklist.teams]);
+
+	const moveTeam = (arr: Team[], startIndex: number, endIndex: number): Team[] => {
+		const result = [...arr];
+		const [movedElement] = result.splice(startIndex, 1);
+		result.splice(endIndex, 0, movedElement);
+		return result;
+	};
+
+	const updateCategory = (arr: Team[], index: number) => {
+		if (index < 0 || index >= arr.length) {
+			return arr;
 		}
 
-		return result;
+		for (let i = index - 1; i >= 0; i--) {
+			if (arr[i].number.startsWith("D")) {
+				arr[index].category = arr[i].category;
+				break;
+			}
+		}
+
+		return arr;
+	};
+
+	const removeDividers = (arr: Team[]): Team[] => {
+		return arr.filter((team) => !team.number.startsWith("D"));
+	};
+
+	const updateListPositions = (arr: Team[]): Team[] => {
+		return arr.map((team, index) => ({
+			...team,
+			listPosition: index + 1,
+		}));
+	};
+
+	const onDragEnd = async (result: DropResult<string>) => {
+		if (result.draggableId.startsWith("D")) {
+			// divider
+		} else {
+			const newList = updateListPositions(
+				removeDividers(
+					updateCategory(
+						moveTeam(
+							teamList,
+							result.source.index,
+							result.destination?.index || result.source.index,
+						),
+						result.destination?.index || result.source.index,
+					),
+				),
+			);
+			await updatePicklistOrder(picklist.id, newList);
+		}
 	};
 
 	return (
@@ -43,7 +107,7 @@ const TeamList = memo(({ picklist, onDragEnd }: TeamListProps) => {
 			<Droppable droppableId="teamList">
 				{(provided) => (
 					<List ref={provided.innerRef} {...provided.droppableProps}>
-						{addDividers(picklist.teams).map((team, index) => (
+						{teamList.map((team, index) => (
 							<Draggable
 								key={team.number}
 								draggableId={String(team.number)}

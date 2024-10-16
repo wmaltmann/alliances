@@ -1,4 +1,3 @@
-import { DropResult } from "@hello-pangea/dnd";
 import { Stack, Typography } from "@mui/material";
 import { FC, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -29,17 +28,13 @@ const ListPage: FC = () => {
 		navigate(`/${activePicklistId}/addteam`);
 	};
 
-	const onDragEnd = (result: DropResult<string>) => {
-		console.log(result);
-	};
-
 	return (
 		<>
 			<TopBar onClickBack={handleBackOnClick} />
 			<Page>
 				<Stack width="100%" paddingBottom="60px" paddingTop="60px">
 					{activePicklist?.teams ? (
-						<TeamList picklist={activePicklist} onDragEnd={onDragEnd} />
+						<TeamList picklist={activePicklist} />
 					) : (
 						<Typography>List not found or user missing permissions</Typography>
 					)}

@@ -1,6 +1,6 @@
 import { Location } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import { readFbDb, subscribeToFbDbPicklist, updateFbDb } from "../../libs/FirebaseLib";
+import { readFbDb, subscribeToFbDbPicklist, updateFbDb, writeFbDb } from "../../libs/FirebaseLib";
 import { getPickListIdFromPath } from "../../libs/Utills";
 import {
 	FbDbPicklist,
@@ -125,10 +125,10 @@ export const migratePicklist = (
 };
 
 const checkUserRole = (userId: string, members: string[], owners: string[]): PicklistPermission => {
-	if (members.includes(userId)) {
-		return "member";
-	} else if (owners.includes(userId)) {
+	if (owners.includes(userId)) {
 		return "owner";
+	} else if (members.includes(userId)) {
+		return "member";
 	} else {
 		return "none";
 	}
@@ -141,6 +141,17 @@ const convertFbDBTeamsToTeams = (fbDBTeams: { [key: string]: FbDBTeam }): Team[]
 		category: team.category,
 		listPosition: team.listPosition,
 	}));
+};
+
+const convertTeamsToFbDBTeams = (teams: Team[]): { [key: string]: FbDBTeam } => {
+	return teams.reduce<{ [key: string]: FbDBTeam }>((acc, team) => {
+		acc[team.number] = {
+			name: team.name,
+			category: team.category,
+			listPosition: team.listPosition,
+		};
+		return acc;
+	}, {});
 };
 
 const sortTeamsByListPosition = (teams: Team[]): Team[] => {
@@ -159,4 +170,9 @@ export const addTeamToPicklist = async (
 		category: "unassigned",
 	};
 	await updateFbDb(`/picklists/${activePicklist.id}/teams/${teamNumber}`, newTeam);
+};
+
+export const updatePicklistOrder = async (picklistId: string, newTeamOrder: Team[]) => {
+	const path = `/picklists/${picklistId}/teams`;
+	await writeFbDb(path, convertTeamsToFbDBTeams(newTeamOrder));
 };
