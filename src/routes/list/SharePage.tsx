@@ -57,21 +57,23 @@ const SharePage: FC = () => {
 							)}
 						</Stack>
 						{activePicklist?.owners &&
-							activePicklist.owners.map((owner) => {
+							activePicklist.owners.map((owner, index) => {
 								return (
 									<Stack
 										direction="row"
 										justifyContent="space-between"
 										alignItems="center"
+										key={index}
 									>
 										<Typography>{owner.email}</Typography>
-										{activePicklist.permission === "owner" && (
-											<IconButton
-												onClick={() => removeUser("owners", owner.id)}
-											>
-												<Delete color="primary" />
-											</IconButton>
-										)}
+										{activePicklist.permission === "owner" &&
+											activePicklist.owners.length > 1 && (
+												<IconButton
+													onClick={() => removeUser("owners", owner.id)}
+												>
+													<Delete color="primary" />
+												</IconButton>
+											)}
 									</Stack>
 								);
 							})}
@@ -91,12 +93,13 @@ const SharePage: FC = () => {
 							)}
 						</Stack>
 						{activePicklist?.members &&
-							activePicklist.members.map((member) => {
+							activePicklist.members.map((member, index) => {
 								return (
 									<Stack
 										direction="row"
 										justifyContent="space-between"
 										alignItems="center"
+										key={index}
 									>
 										<Typography>{member.email}</Typography>
 										{activePicklist.permission === "owner" && (

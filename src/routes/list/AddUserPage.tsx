@@ -50,3 +50,10 @@ const AddUserPage: FC = () => {
 };
 
 export default AddUserPage;
+
+// scan code to get user Id and email
+// add user
+// create invite, timeout, list Id
+// on load lists, check for invite by user Id, email
+//if invite add list to list, then load lists, remove invite
+// if time out remove invite
