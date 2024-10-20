@@ -252,3 +252,13 @@ export const removeTeamFromAlliance = async (
 		[position]: "",
 	});
 };
+
+export const processPicklistError = (error: Error) => {
+	switch (error.message) {
+		case "PERMISSION_DENIED: Permission denied":
+			return "You don't have permission to edit this picklist";
+		default:
+			console.log(error);
+			return undefined;
+	}
+};
