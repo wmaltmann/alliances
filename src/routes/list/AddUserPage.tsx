@@ -1,5 +1,6 @@
 import { Stack, Typography } from "@mui/material";
-import { FC } from "react";
+import { FC, useState } from "react";
+import { QrReader } from "react-qr-reader";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../../app/AppContext";
 import Page from "../../components/page/Page";
@@ -13,12 +14,36 @@ const AddUserPage: FC = () => {
 	const handleOnClickBack = () => {
 		navigate(`/${activePicklistId}/list`);
 	};
+	const [scanResult, setScanResult] = useState<string | null>(null);
+
+	const handleScan = (result: string | null) => {
+		if (result) {
+			setScanResult(result);
+		}
+	};
+
+	const handleError = () => {
+		console.error("error");
+	};
 	return (
 		<Page>
 			<TopBar onClickBack={handleOnClickBack} />
 
 			<Stack height="100%" paddingTop="60px">
-				<Typography>Test</Typography>
+				<Typography>QR</Typography>
+				<QrReader
+					onResult={(result, error) => {
+						if (result) {
+							handleScan(result?.getText());
+						}
+
+						if (error) {
+							handleError();
+						}
+					}}
+					constraints={{ facingMode: "environment" }}
+				/>
+				<Typography>{scanResult}</Typography>
 			</Stack>
 		</Page>
 	);
