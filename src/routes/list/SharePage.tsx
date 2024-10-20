@@ -28,7 +28,9 @@ const SharePage: FC = () => {
 		}
 	};
 	const addUser = async (type: "owners" | "members") => {
-		console.log("add", type);
+		if (activePicklist) {
+			navigate(`/${activePicklist.id}/adduser/${type}`);
+		}
 	};
 	return (
 		<>
