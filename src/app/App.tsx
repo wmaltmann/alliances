@@ -6,8 +6,8 @@ import { fbAuth } from "../libs/FirebaseLib";
 import { listenToPicklist } from "../model/picklist/picklist.Manager";
 import AddTeamPage from "../routes/list/AddTeamPage";
 import AlliancesPage from "../routes/list/AlliancesPage";
-import DashboardPage from "../routes/list/DashboardPage";
 import ListPage from "../routes/list/ListPage";
+import SelectionPage from "../routes/list/SelectionPage";
 import SharePage from "../routes/list/SharePage";
 import ListsPage from "../routes/lists/ListsPage";
 import NewListPage from "../routes/lists/NewListPage";
@@ -59,7 +59,7 @@ function App() {
 						<Route path="/lists" element={<ListsPage />} />
 						<Route path="/newlist" element={<NewListPage />} />
 						<Route path="/:id/list" element={<ListPage />} />
-						<Route path="/:id/dashboard" element={<DashboardPage />} />
+						<Route path="/:id/selection" element={<SelectionPage />} />
 						<Route path="/:id/alliances" element={<AlliancesPage />} />
 						<Route path="/:id/share" element={<SharePage />} />
 						<Route path="/:id/addteam" element={<AddTeamPage />} />

@@ -125,11 +125,11 @@ const TeamChip: React.FC<TeamChipProps> = ({
 			<Chip
 				label={text}
 				onClick={onClick}
-				onMouseDown={handleMouseDown}
-				onMouseUp={handleMouseUp}
-				onMouseLeave={endHold}
-				onTouchStart={handleTouchStart}
-				onTouchEnd={handleTouchEnd}
+				onMouseDown={enableHold ? handleMouseDown : () => {}}
+				onMouseUp={enableHold ? handleMouseUp : () => {}}
+				onMouseLeave={enableHold ? endHold : () => {}}
+				onTouchStart={enableHold ? handleTouchStart : () => {}}
+				onTouchEnd={enableHold ? handleTouchEnd : () => {}}
 				sx={{
 					border: "2px solid",
 					borderColor: bgColor,
