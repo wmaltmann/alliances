@@ -21,7 +21,7 @@ const CreateListPage: FC = () => {
 		event.preventDefault();
 		if (user) {
 			try {
-				const plid = await createPicklist(user.id, name);
+				const plid = await createPicklist(user.id, user.profile.email, name);
 				navigate(`/${plid}/list`);
 			} catch (error) {
 				console.log(error);
