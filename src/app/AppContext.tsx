@@ -36,7 +36,7 @@ export const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children
 	const [bottomBarState, setBottomBarState] = useState<number>(0);
 	const alerts = new Alerts();
 
-	const stuff = (
+	const picklistETL = (
 		loadingPicklistId: string,
 		picklist: FbDbPicklist | undefined,
 		userId: string | undefined,
@@ -49,7 +49,7 @@ export const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children
 		setUser,
 		lists: {
 			activePicklist,
-			setActivePicklist: stuff,
+			setActivePicklist: picklistETL,
 			activePicklistId,
 			setActivePicklistId,
 			picklists,
