@@ -39,7 +39,9 @@ const ListPage: FC = () => {
 						<Typography>List not found or user missing permissions</Typography>
 					)}
 				</Stack>
-				<FloatingButton text="Add Team" bottomMenu extended onClick={handleAddTeam} />
+				{(activePicklist?.permission || "") === "owner" && (
+					<FloatingButton text="Add Team" bottomMenu extended onClick={handleAddTeam} />
+				)}
 			</Page>
 			<BottomBar />
 		</>

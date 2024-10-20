@@ -1,6 +1,7 @@
-import { ArrowBackIosNew, FilterList } from "@mui/icons-material";
+import { ArrowBackIosNew, EditOff, FilterList } from "@mui/icons-material";
 import { AppBar, IconButton, TextField, Toolbar, Typography, useTheme } from "@mui/material";
 import React from "react";
+import { useAppContext } from "../../app/AppContext";
 
 interface TopBarProps {
 	onClickBack: React.MouseEventHandler<HTMLButtonElement>;
@@ -10,6 +11,9 @@ interface TopBarProps {
 
 const TopBar: React.FC<TopBarProps> = ({ onClickBack, variant = "back", headerText = "" }) => {
 	const theme = useTheme();
+	const {
+		lists: { activePicklist },
+	} = useAppContext();
 	return (
 		<AppBar
 			position="fixed"
@@ -17,7 +21,7 @@ const TopBar: React.FC<TopBarProps> = ({ onClickBack, variant = "back", headerTe
 				top: 0,
 				left: 0,
 				right: 0,
-				zIndex: 1000,
+				zIndex: 2,
 				height: "60px",
 				backgroundColor: theme.palette.background.default,
 				color: theme.palette.text.primary,
@@ -27,6 +31,9 @@ const TopBar: React.FC<TopBarProps> = ({ onClickBack, variant = "back", headerTe
 				<IconButton edge="start" color="primary" aria-label="back" onClick={onClickBack}>
 					<ArrowBackIosNew />
 				</IconButton>
+				{(activePicklist?.permission || "") !== "owner" && (
+					<EditOff sx={{ color: "primary.main" }} />
+				)}
 				{variant === "header" && (
 					<Typography
 						variant="h2"

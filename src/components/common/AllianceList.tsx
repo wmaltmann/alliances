@@ -13,7 +13,11 @@ const AllianceList: FC = () => {
 	const alliances = activePicklist?.alliances ? activePicklist.alliances : [];
 	const addAlliance = async () => {
 		if (activePicklist) {
-			await addAllianceToPicklist(activePicklist);
+			try {
+				await addAllianceToPicklist(activePicklist);
+			} catch (error) {
+				//
+			}
 		}
 	};
 	return (
@@ -37,11 +41,13 @@ const AllianceList: FC = () => {
 				marginBottom={theme.spacing(1)}
 				marginTop={alliances.length === 0 ? theme.spacing(1) : 0}
 			>
-				<RoundButton
-					onClick={addAlliance}
-					text={"Add Alliance"}
-					extended={alliances.length < 2}
-				/>
+				{(activePicklist?.permission || "") === "owner" && (
+					<RoundButton
+						onClick={addAlliance}
+						text={"Add Alliance"}
+						extended={alliances.length < 2}
+					/>
+				)}
 			</Stack>
 		</Box>
 	);

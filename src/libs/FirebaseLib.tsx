@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { get, getDatabase, onValue, ref, set, update } from "firebase/database";
+import { get, getDatabase, onValue, ref, remove, set, update } from "firebase/database";
 import { getAppStage } from "../app/AppUtils";
 import { FbDbPicklist } from "../model/picklist/picklist.Model";
 
@@ -70,4 +70,10 @@ export const subscribeToFbDbPicklist = (
 	});
 
 	return unsubscribe;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const removeFbDb = async (path: string) => {
+	const dbRef = ref(fbDb, path);
+	await remove(dbRef);
 };
