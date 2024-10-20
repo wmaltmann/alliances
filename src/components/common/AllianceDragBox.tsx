@@ -27,7 +27,7 @@ const AllianceDragBox: FC<AllianceDragBoxProps> = ({ teams }) => {
 					}}
 				>
 					{teams.map((team, index) => (
-						<Draggable draggableId={team.number} index={index} key={index}>
+						<Draggable draggableId={team.number} index={index} key={team.number}>
 							{(provided) => (
 								<Box
 									sx={{ marginBottom: theme.spacing(2) }}

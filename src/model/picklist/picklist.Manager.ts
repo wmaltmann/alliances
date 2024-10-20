@@ -226,7 +226,6 @@ export const addTeamToAlliance = async (
 	alliance: Alliance,
 	teamNumber: string,
 ) => {
-	console.log("alliance", alliance);
 	const findFirstBlankPosition = (alliance: Alliance): keyof Alliance | undefined => {
 		for (const key in alliance) {
 			if (alliance[key as keyof Alliance] === "") {

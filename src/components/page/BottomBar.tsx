@@ -20,13 +20,13 @@ const BottomBar: React.FC = () => {
 				//Share
 				navigate(basePath + `/share`);
 				break;
-			case 2:
+			case 1:
 				//Bracket
 				navigate(basePath + `/alliances`);
 				break;
-			case 1:
-				//Dashboard
-				navigate(basePath + `/dashboard`);
+			case 2:
+				//Selection
+				navigate(basePath + `/selection`);
 				break;
 			default:
 				//List
@@ -55,8 +55,8 @@ const BottomBar: React.FC = () => {
 				showLabels
 			>
 				<BottomNavigationAction label="PickList" icon={<FormatListBulleted />} />
-				<BottomNavigationAction label="Dashboard" icon={<GridView />} />
 				<BottomNavigationAction label="Alliances" icon={<AccountTree />} />
+				<BottomNavigationAction label="Selection" icon={<GridView />} />
 				<BottomNavigationAction label="Share" icon={<Share />} />
 			</BottomNavigation>
 		</Paper>

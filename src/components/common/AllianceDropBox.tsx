@@ -68,7 +68,7 @@ const AllianceDropBox: FC<AllianceDropBoxProps> = ({ alliance }) => {
 									text={alliance.captain}
 									teamCategory={alliance.captain ? "locked" : "unassigned"}
 									large
-									enableHold
+									enableHold={alliance.captain !== ""}
 									onHold={captainOnHold}
 								/>
 							</Stack>
@@ -81,7 +81,7 @@ const AllianceDropBox: FC<AllianceDropBoxProps> = ({ alliance }) => {
 									text={alliance.firstPick}
 									teamCategory={alliance.firstPick ? "locked" : "unassigned"}
 									large
-									enableHold
+									enableHold={alliance.firstPick !== ""}
 									onHold={firstOnHold}
 								/>
 							</Stack>
@@ -91,7 +91,7 @@ const AllianceDropBox: FC<AllianceDropBoxProps> = ({ alliance }) => {
 									text={alliance.secondPick}
 									teamCategory={alliance.secondPick ? "locked" : "unassigned"}
 									large
-									enableHold
+									enableHold={alliance.secondPick !== ""}
 									onHold={secondOnHold}
 								/>
 							</Stack>

@@ -8,7 +8,7 @@ import TopBar from "../../components/page/TopBar";
 const SharePage: FC = () => {
 	const navigate = useNavigate();
 	const handleBackOnClick = () => {
-		navigate(`/events`);
+		navigate(`/lists`);
 	};
 	return (
 		<>
