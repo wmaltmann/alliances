@@ -6,6 +6,7 @@ import { AppContextProvider } from "./app/AppContext";
 import * as serviceWorkerRegistration from "./app/serviceWorkerRegistration";
 import { themeDark } from "./app/theme";
 import AlertsManager from "./components/common/AlertManager";
+import StageFlag from "./components/common/StageFlag";
 import "./index.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
@@ -15,6 +16,7 @@ root.render(
 			<ThemeProvider theme={themeDark}>
 				<CssBaseline />
 				<AlertsManager />
+				<StageFlag />
 				<App />
 			</ThemeProvider>
 		</AppContextProvider>
