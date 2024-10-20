@@ -3,8 +3,10 @@ import { v4 as uuidv4 } from "uuid";
 import { readFbDb, subscribeToFbDbPicklist, updateFbDb, writeFbDb } from "../../libs/FirebaseLib";
 import { getPickListIdFromPath } from "../../libs/Utills";
 import {
+	Alliance,
+	FbDbAlliance,
 	FbDbPicklist,
-	FbDBTeam,
+	FbDbTeam,
 	Picklist,
 	PicklistCore,
 	PicklistPermission,
@@ -122,6 +124,9 @@ export const migratePicklist = (
 			: [],
 		members: members,
 		owners: owners,
+		alliances: fbDbPicklist.alliances
+			? convertFbDbAlliancesToAlliances(fbDbPicklist.alliances)
+			: [],
 	};
 	return picklist;
 };
@@ -136,21 +141,23 @@ const checkUserRole = (userId: string, members: string[], owners: string[]): Pic
 	}
 };
 
-const convertFbDBTeamsToTeams = (fbDBTeams: { [key: string]: FbDBTeam }): Team[] => {
+const convertFbDBTeamsToTeams = (fbDBTeams: { [key: string]: FbDbTeam }): Team[] => {
 	return Object.entries(fbDBTeams).map(([key, team]) => ({
 		number: key,
 		name: team.name,
 		category: team.category,
 		listPosition: team.listPosition,
+		rank: team.rank,
 	}));
 };
 
-const convertTeamsToFbDBTeams = (teams: Team[]): { [key: string]: FbDBTeam } => {
-	return teams.reduce<{ [key: string]: FbDBTeam }>((acc, team) => {
+const convertTeamsToFbDBTeams = (teams: Team[]): { [key: string]: FbDbTeam } => {
+	return teams.reduce<{ [key: string]: FbDbTeam }>((acc, team) => {
 		acc[team.number] = {
 			name: team.name,
 			category: team.category,
 			listPosition: team.listPosition,
+			rank: team.rank,
 		};
 		return acc;
 	}, {});
@@ -170,6 +177,7 @@ export const addTeamToPicklist = async (
 		name: teamName,
 		listPosition: activePicklist.teams.length + 1,
 		category: "unassigned",
+		rank: -1,
 	};
 	await updateFbDb(`/picklists/${activePicklist.id}/teams/${teamNumber}`, newTeam);
 };
@@ -177,4 +185,71 @@ export const addTeamToPicklist = async (
 export const updatePicklistOrder = async (picklistId: string, newTeamOrder: Team[]) => {
 	const path = `/picklists/${picklistId}/teams`;
 	await writeFbDb(path, convertTeamsToFbDBTeams(newTeamOrder));
+};
+
+const convertFbDbAlliancesToAlliances = (fbDBAlliances: {
+	[key: string]: FbDbAlliance;
+}): Alliance[] => {
+	return Object.entries(fbDBAlliances).map(([key, alliance]) => ({
+		number: (Number(key) + 1).toString(),
+		captain: alliance.captain,
+		firstPick: alliance.firstPick,
+		secondPick: alliance.secondPick,
+	}));
+};
+
+export const convertAlliancesToFbDAlliances = (
+	alliances: Alliance[],
+): { [key: string]: FbDbAlliance } => {
+	return alliances.reduce<{ [key: string]: FbDbAlliance }>((acc, alliance) => {
+		acc[alliance.number] = {
+			captain: alliance.captain,
+			firstPick: alliance.firstPick,
+			secondPick: alliance.secondPick,
+		};
+		return acc;
+	}, {});
+};
+
+export const addAllianceToPicklist = async (activePicklist: Picklist) => {
+	const index = activePicklist.alliances.length;
+	const newAlliance: FbDbAlliance = {
+		captain: "",
+		firstPick: "",
+		secondPick: "",
+	};
+	await updateFbDb(`/picklists/${activePicklist.id}/alliances/${index}/`, newAlliance);
+};
+
+export const addTeamToAlliance = async (
+	activePicklist: Picklist,
+	alliance: Alliance,
+	teamNumber: string,
+) => {
+	console.log("alliance", alliance);
+	const findFirstBlankPosition = (alliance: Alliance): keyof Alliance | undefined => {
+		for (const key in alliance) {
+			if (alliance[key as keyof Alliance] === "") {
+				return key as keyof Alliance;
+			}
+		}
+		return undefined;
+	};
+	const position = findFirstBlankPosition(alliance);
+	if (!position) {
+		return;
+	}
+	await updateFbDb(`/picklists/${activePicklist.id}/alliances/${Number(alliance.number) - 1}/`, {
+		[position]: teamNumber,
+	});
+};
+
+export const removeTeamFromAlliance = async (
+	activePicklist: Picklist,
+	allianceNumber: number,
+	position: "captain" | "firstPick" | "secondPick",
+) => {
+	await updateFbDb(`/picklists/${activePicklist.id}/alliances/${allianceNumber - 1}/`, {
+		[position]: "",
+	});
 };
