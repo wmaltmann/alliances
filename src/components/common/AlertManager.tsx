@@ -23,7 +23,7 @@ const AlertsManager: React.FC = () => {
 				top: theme.spacing(2),
 				left: "50%",
 				transform: "translateX(-50%)",
-				zIndex: 1000,
+				zIndex: 5000,
 				width: "100%",
 			}}
 		>

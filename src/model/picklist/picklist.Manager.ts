@@ -1,32 +1,44 @@
 import { Location } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import { readFbDb, subscribeToFbDbPicklist, updateFbDb, writeFbDb } from "../../libs/FirebaseLib";
+import {
+	readFbDb,
+	removeFbDb,
+	subscribeToFbDbPicklist,
+	updateFbDb,
+	writeFbDb,
+} from "../../libs/FirebaseLib";
 import { getPickListIdFromPath } from "../../libs/Utills";
+import { User } from "../user/user.Model";
 import {
 	Alliance,
 	FbDbAlliance,
 	FbDbPicklist,
 	FbDbTeam,
+	ID,
 	Picklist,
 	PicklistCore,
+	PicklistInvite,
 	PicklistPermission,
 	Team,
 } from "./picklist.Model";
 
-export const createPicklist = async (userId: string, picklistName: string) => {
+export const createPicklist = async (userId: string, userEmail: string, picklistName: string) => {
 	const plid = uuidv4();
-	const userPicklistData = { [plid]: true };
-
-	await updateFbDb(`/users/${userId}/picklists`, userPicklistData);
+	await addPicklistToUser(userId, plid);
 
 	const picklistsData = {
 		name: picklistName,
-		owners: { [userId]: true },
+		owners: { [userId]: userEmail },
 	};
 
 	await updateFbDb(`/picklists/${plid}`, picklistsData);
 
 	return plid;
+};
+
+const addPicklistToUser = async (userId: string, picklistId: string) => {
+	const userPicklistData = { [picklistId]: true };
+	await updateFbDb(`/users/${userId}/picklists`, userPicklistData);
 };
 
 export const getUserPicklists = async (userId: string) => {
@@ -112,8 +124,8 @@ export const migratePicklist = (
 	fbDbPicklist: FbDbPicklist | undefined,
 ) => {
 	if (!fbDbPicklist) throw new Error("Picklist undefined");
-	const members = fbDbPicklist.members ? Object.keys(fbDbPicklist.members) : [];
-	const owners = fbDbPicklist.owners ? Object.keys(fbDbPicklist.owners) : [];
+	const members = fbDbPicklist.members ? convertFbDbMembersToMembers(fbDbPicklist.members) : [];
+	const owners = fbDbPicklist.owners ? convertFbDbMembersToMembers(fbDbPicklist.owners) : [];
 	const permission = checkUserRole(userId || "", members, owners);
 	const picklist: Picklist = {
 		id: activePicklistId,
@@ -131,10 +143,17 @@ export const migratePicklist = (
 	return picklist;
 };
 
-const checkUserRole = (userId: string, members: string[], owners: string[]): PicklistPermission => {
-	if (owners.includes(userId)) {
+const convertFbDbMembersToMembers = (data: { [key: string]: string }): ID[] => {
+	return Object.entries(data).map(([id, email]) => ({
+		id,
+		email,
+	}));
+};
+
+const checkUserRole = (userId: string, members: ID[], owners: ID[]): PicklistPermission => {
+	if (owners.some((idObj) => idObj.id === userId)) {
 		return "owner";
-	} else if (members.includes(userId)) {
+	} else if (members.some((idObj) => idObj.id === userId)) {
 		return "member";
 	} else {
 		return "none";
@@ -171,13 +190,14 @@ export const addTeamToPicklist = async (
 	activePicklist: Picklist,
 	teamName: string,
 	teamNumber: string,
+	rank: number,
 ) => {
 	const newTeam: Team = {
 		number: teamNumber,
 		name: teamName,
 		listPosition: activePicklist.teams.length + 1,
 		category: "unassigned",
-		rank: -1,
+		rank: rank,
 	};
 	await updateFbDb(`/picklists/${activePicklist.id}/teams/${teamNumber}`, newTeam);
 };
@@ -251,4 +271,78 @@ export const removeTeamFromAlliance = async (
 	await updateFbDb(`/picklists/${activePicklist.id}/alliances/${allianceNumber - 1}/`, {
 		[position]: "",
 	});
+};
+
+export const processPicklistError = (error: Error) => {
+	switch (error.message) {
+		case "PERMISSION_DENIED: Permission denied":
+			return "You don't have permission to edit this picklist";
+		default:
+			console.log(error);
+			return undefined;
+	}
+};
+
+export const removeUserFromPicklist = async (
+	picklist: Picklist,
+	type: "owners" | "members",
+	id: string,
+) => {
+	await removeFbDb(`/picklists/${picklist.id}/${type}/${id}`);
+};
+
+export const addUserToPicklist = async (
+	picklist: Picklist,
+	type: "owners" | "members",
+	id: string,
+	email: string,
+) => {
+	const user = { [id]: email };
+	await updateFbDb(`/picklists/${picklist.id}/${type}/`, user);
+};
+
+export const createPicklistInvite = async (invite: PicklistInvite) => {
+	const data = {
+		[invite.picklistId]: {
+			email: invite.email,
+			inviteDate: invite.inviteDate,
+		},
+	};
+	await updateFbDb(`/invites/${invite.userId}`, data);
+};
+
+export const removePicklistInvite = async (userId: string, picklistId: string) => {
+	await removeFbDb(`/invites/${userId}/${picklistId}`);
+};
+
+export const processPicklistInvites = async (user: User) => {
+	const fbDbInvites = await readFbDb(`/invites/${user.id}`);
+	if (!fbDbInvites) return;
+	const invites = convertFbDbInvitesToPicklistInvites(fbDbInvites, user.id);
+	if (invites.length < 1) return;
+	const today = new Date();
+	invites.forEach(async (invite) => {
+		const isEmailMatch = invite.email === user.profile.email;
+		const inviteDate = new Date(invite.inviteDate);
+		const dateDifference = (today.getTime() - inviteDate.getTime()) / (1000 * 3600 * 24);
+		const isWithin14Days = dateDifference <= 14;
+		if (isEmailMatch && isWithin14Days) {
+			await addPicklistToUser(invite.userId, invite.picklistId);
+			await removePicklistInvite(invite.userId, invite.picklistId);
+		} else {
+			await removePicklistInvite(invite.userId, invite.picklistId);
+		}
+	});
+};
+
+const convertFbDbInvitesToPicklistInvites = (
+	data: Record<string, { email: string; inviteDate: string }>,
+	userId: string,
+): PicklistInvite[] => {
+	return Object.entries(data).map(([picklistId, { email, inviteDate }]) => ({
+		userId,
+		email,
+		picklistId,
+		inviteDate: new Date(inviteDate),
+	}));
 };

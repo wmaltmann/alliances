@@ -18,19 +18,31 @@ const AllianceDropBox: FC<AllianceDropBoxProps> = ({ alliance }) => {
 
 	const captainOnHold = async () => {
 		if (activePicklist) {
-			await removeTeamFromAlliance(activePicklist, Number(alliance.number), "captain");
+			try {
+				await removeTeamFromAlliance(activePicklist, Number(alliance.number), "captain");
+			} catch (error) {
+				//
+			}
 		}
 	};
 
 	const firstOnHold = async () => {
 		if (activePicklist) {
-			await removeTeamFromAlliance(activePicklist, Number(alliance.number), "firstPick");
+			try {
+				await removeTeamFromAlliance(activePicklist, Number(alliance.number), "firstPick");
+			} catch (error) {
+				//
+			}
 		}
 	};
 
 	const secondOnHold = async () => {
 		if (activePicklist) {
-			await removeTeamFromAlliance(activePicklist, Number(alliance.number), "secondPick");
+			try {
+				await removeTeamFromAlliance(activePicklist, Number(alliance.number), "secondPick");
+			} catch (error) {
+				//
+			}
 		}
 	};
 	return (

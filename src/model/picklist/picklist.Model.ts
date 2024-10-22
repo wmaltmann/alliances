@@ -6,8 +6,8 @@ export interface PicklistCore {
 
 export interface Picklist extends PicklistCore {
 	teams: Team[];
-	owners: string[];
-	members: string[];
+	owners: ID[];
+	members: ID[];
 	alliances: Alliance[];
 }
 
@@ -24,9 +24,14 @@ export interface Team {
 export interface FbDbPicklist {
 	name: string;
 	teams: { [key: string]: FbDbTeam };
-	owners: { [key: string]: true };
-	members: { [key: string]: true };
+	owners: { [key: string]: string };
+	members: { [key: string]: string };
 	alliances: { [key: string]: FbDbAlliance };
+}
+
+export interface ID {
+	id: string;
+	email: string;
 }
 
 export interface FbDbTeam {
@@ -49,4 +54,11 @@ export interface Alliance {
 	captain: string;
 	firstPick: string;
 	secondPick: string;
+}
+
+export interface PicklistInvite {
+	userId: string;
+	email: string;
+	picklistId: string;
+	inviteDate: Date;
 }

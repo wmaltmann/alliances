@@ -139,18 +139,30 @@ const TeamList = memo(({ picklist }: TeamListProps) => {
 				const newList = removeDividers(
 					moveDividerUpAndUpdateTeams(teamList, startIndex, endIndex),
 				);
-				await updatePicklistOrder(picklist.id, newList);
+				try {
+					await updatePicklistOrder(picklist.id, newList);
+				} catch (error) {
+					//
+				}
 			} else {
 				const newList = removeDividers(
 					moveDividerDownAndUpdateTeams(teamList, startIndex, endIndex),
 				);
-				await updatePicklistOrder(picklist.id, newList);
+				try {
+					await updatePicklistOrder(picklist.id, newList);
+				} catch (error) {
+					//
+				}
 			}
 		} else {
 			const newList = updateListPositions(
 				removeDividers(updateCategory(moveTeam(teamList, startIndex, endIndex), endIndex)),
 			);
-			await updatePicklistOrder(picklist.id, newList);
+			try {
+				await updatePicklistOrder(picklist.id, newList);
+			} catch (error) {
+				//
+			}
 		}
 	};
 

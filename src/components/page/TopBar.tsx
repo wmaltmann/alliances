@@ -10,6 +10,7 @@ interface TopBarProps {
 
 const TopBar: React.FC<TopBarProps> = ({ onClickBack, variant = "back", headerText = "" }) => {
 	const theme = useTheme();
+
 	return (
 		<AppBar
 			position="fixed"
@@ -17,7 +18,7 @@ const TopBar: React.FC<TopBarProps> = ({ onClickBack, variant = "back", headerTe
 				top: 0,
 				left: 0,
 				right: 0,
-				zIndex: 1000,
+				zIndex: 2,
 				height: "60px",
 				backgroundColor: theme.palette.background.default,
 				color: theme.palette.text.primary,
