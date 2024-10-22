@@ -285,3 +285,13 @@ export const removeUserFromPicklist = async (
 ) => {
 	await removeFbDb(`/picklists/${picklist.id}/${type}/${id}`);
 };
+
+export const addUserToPicklist = async (
+	picklist: Picklist,
+	type: "owners" | "members",
+	id: string,
+	email: string,
+) => {
+	const user = { [id]: email };
+	await updateFbDb(`/picklists/${picklist.id}/${type}/`, user);
+};
