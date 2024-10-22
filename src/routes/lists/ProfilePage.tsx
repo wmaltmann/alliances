@@ -18,7 +18,7 @@ const ProfilePage: FC = () => {
 
 	useEffect(() => {
 		if (user) {
-			setQrValue(JSON.stringify({ id: user.id + 1, email: user.profile.email }));
+			setQrValue(JSON.stringify({ id: user.id, email: user.profile.email }));
 		} else {
 			setQrValue("");
 		}
