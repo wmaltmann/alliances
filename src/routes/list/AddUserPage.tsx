@@ -9,7 +9,8 @@ import QrReader from "../../components/common/QRReader";
 import Page from "../../components/page/Page";
 import TopBar from "../../components/page/TopBar";
 import { getLastSegmentOfUrl } from "../../libs/Utills";
-import { addUserToPicklist } from "../../model/picklist/picklist.Manager";
+import { addUserToPicklist, createPicklistInvite } from "../../model/picklist/picklist.Manager";
+import { PicklistInvite } from "../../model/picklist/picklist.Model";
 
 const AddUserPage: FC = () => {
 	const navigate = useNavigate();
@@ -47,7 +48,13 @@ const AddUserPage: FC = () => {
 		if (activePicklist && newUser) {
 			try {
 				await addUserToPicklist(activePicklist, type, newUser.id, newUser.email);
-				//create invite
+				const invite: PicklistInvite = {
+					userId: newUser.id,
+					email: newUser.email,
+					picklistId: activePicklist.id,
+					inviteDate: new Date(),
+				};
+				await createPicklistInvite(invite);
 				navigate(`/${activePicklist.id}/share`);
 			} catch {
 				setScanning("error");

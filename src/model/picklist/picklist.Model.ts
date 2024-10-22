@@ -55,3 +55,10 @@ export interface Alliance {
 	firstPick: string;
 	secondPick: string;
 }
+
+export interface PicklistInvite {
+	userId: string;
+	email: string;
+	picklistId: string;
+	inviteDate: Date;
+}

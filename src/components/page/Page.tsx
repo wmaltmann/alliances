@@ -1,12 +1,16 @@
 import { Box } from "@mui/material";
-import React, { ReactNode } from "react";
+import React, { HTMLAttributes, ReactNode } from "react";
 
-type PageProps = {
+interface PageProps extends HTMLAttributes<HTMLDivElement> {
 	children: ReactNode;
-};
+}
 
-const Page: React.FC<PageProps> = ({ children }) => {
-	return <Box sx={{ height: "100vh" }}>{children}</Box>;
+const Page: React.FC<PageProps> = ({ children, ...props }) => {
+	return (
+		<Box {...props} sx={{ height: "100vh" }}>
+			{children}
+		</Box>
+	);
 };
 
 export default Page;
