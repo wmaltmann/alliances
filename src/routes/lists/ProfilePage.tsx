@@ -1,5 +1,7 @@
-import { Stack, Typography, useTheme } from "@mui/material";
-import { FC } from "react";
+import { QrCode2 } from "@mui/icons-material";
+import { Box, Stack, Typography, useTheme } from "@mui/material";
+import { QRCodeCanvas } from "qrcode.react";
+import { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../../app/AppContext";
 import ASButton from "../../components/common/ASButton";
@@ -12,6 +14,15 @@ const ProfilePage: FC = () => {
 	const navigate = useNavigate();
 	const { user } = appContextData;
 	const theme = useTheme();
+	const [qrValue, setQrValue] = useState<string>("");
+
+	useEffect(() => {
+		if (user) {
+			setQrValue(JSON.stringify({ id: user.id + 1, email: user.profile.email }));
+		} else {
+			setQrValue("");
+		}
+	}, [user]);
 
 	const handleLogoutClick = async () => {
 		try {
@@ -30,8 +41,22 @@ const ProfilePage: FC = () => {
 		<Page>
 			<TopBar onClickBack={handleOnClickBack} variant="header" headerText="Profile" />
 			<Stack height="100%" padding={theme.spacing(2)} paddingTop="60px">
-				<Stack spacing={3}>
+				<Stack spacing={6}>
 					<Typography>{`Email: ${user?.profile.email}`} </Typography>
+					<Box alignSelf="center" border="10px solid" bgcolor="#ffffff">
+						{qrValue ? (
+							<QRCodeCanvas
+								value={qrValue}
+								size={256}
+								bgColor="#ffffff"
+								fgColor="#000000"
+								level="L"
+							/>
+						) : (
+							<QrCode2 />
+						)}
+					</Box>
+
 					<ASButton text="Log Out" onClick={() => handleLogoutClick()}></ASButton>
 				</Stack>
 			</Stack>

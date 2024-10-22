@@ -1,3 +1,5 @@
+import { Location } from "react-router-dom";
+
 export const getRandomColor = () => {
 	const colors = [
 		"#7FFFD4",
@@ -20,4 +22,10 @@ export const getPickListIdFromPath = (url: string): string => {
 	const regex = /^\/([^/]+)\/[a-zA-Z0-9*]+$/;
 	const match = url.match(regex);
 	return match ? match[1] : "";
+};
+
+export const getLastSegmentOfUrl = (location: Location): string => {
+	const path: string = location.pathname;
+	const segments: string[] = path.split("/").filter(Boolean);
+	return segments[segments.length - 1];
 };
