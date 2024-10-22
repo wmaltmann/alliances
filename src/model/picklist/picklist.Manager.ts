@@ -8,6 +8,7 @@ import {
 	writeFbDb,
 } from "../../libs/FirebaseLib";
 import { getPickListIdFromPath } from "../../libs/Utills";
+import { User } from "../user/user.Model";
 import {
 	Alliance,
 	FbDbAlliance,
@@ -16,15 +17,14 @@ import {
 	ID,
 	Picklist,
 	PicklistCore,
+	PicklistInvite,
 	PicklistPermission,
 	Team,
 } from "./picklist.Model";
 
 export const createPicklist = async (userId: string, userEmail: string, picklistName: string) => {
 	const plid = uuidv4();
-	const userPicklistData = { [plid]: true };
-
-	await updateFbDb(`/users/${userId}/picklists`, userPicklistData);
+	await addPicklistToUser(userId, plid);
 
 	const picklistsData = {
 		name: picklistName,
@@ -34,6 +34,11 @@ export const createPicklist = async (userId: string, userEmail: string, picklist
 	await updateFbDb(`/picklists/${plid}`, picklistsData);
 
 	return plid;
+};
+
+const addPicklistToUser = async (userId: string, picklistId: string) => {
+	const userPicklistData = { [picklistId]: true };
+	await updateFbDb(`/users/${userId}/picklists`, userPicklistData);
 };
 
 export const getUserPicklists = async (userId: string) => {
@@ -294,4 +299,50 @@ export const addUserToPicklist = async (
 ) => {
 	const user = { [id]: email };
 	await updateFbDb(`/picklists/${picklist.id}/${type}/`, user);
+};
+
+export const createPicklistInvite = async (invite: PicklistInvite) => {
+	const data = {
+		[invite.picklistId]: {
+			email: invite.email,
+			inviteDate: invite.inviteDate,
+		},
+	};
+	await updateFbDb(`/invites/${invite.userId}`, data);
+};
+
+export const removePicklistInvite = async (userId: string, picklistId: string) => {
+	await removeFbDb(`/invites/${userId}/${picklistId}`);
+};
+
+export const processPicklistInvites = async (user: User) => {
+	const fbDbInvites = await readFbDb(`/invites/${user.id}`);
+	if (!fbDbInvites) return;
+	const invites = convertFbDbInvitesToPicklistInvites(fbDbInvites, user.id);
+	if (invites.length < 1) return;
+	const today = new Date();
+	invites.forEach(async (invite) => {
+		const isEmailMatch = invite.email === user.profile.email;
+		const inviteDate = new Date(invite.inviteDate);
+		const dateDifference = (today.getTime() - inviteDate.getTime()) / (1000 * 3600 * 24);
+		const isWithin14Days = dateDifference <= 14;
+		if (isEmailMatch && isWithin14Days) {
+			await addPicklistToUser(invite.userId, invite.picklistId);
+			await removePicklistInvite(invite.userId, invite.picklistId);
+		} else {
+			await removePicklistInvite(invite.userId, invite.picklistId);
+		}
+	});
+};
+
+const convertFbDbInvitesToPicklistInvites = (
+	data: Record<string, { email: string; inviteDate: string }>,
+	userId: string,
+): PicklistInvite[] => {
+	return Object.entries(data).map(([picklistId, { email, inviteDate }]) => ({
+		userId,
+		email,
+		picklistId,
+		inviteDate: new Date(inviteDate),
+	}));
 };
