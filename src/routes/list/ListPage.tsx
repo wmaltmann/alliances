@@ -1,6 +1,6 @@
 import { Stack, Typography } from "@mui/material";
 import { FC, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAppContext } from "../../app/AppContext";
 import FloatingButton from "../../components/common/FloatingButton";
 import TeamList from "../../components/common/TeamList";
@@ -11,17 +11,25 @@ import { loadPicklist } from "../../model/picklist/picklist.Manager";
 
 const ListPage: FC = () => {
 	const navigate = useNavigate();
-	const location = useLocation();
 	const {
 		lists: { activePicklist, setActivePicklistId, activePicklistId },
 	} = useAppContext();
+
+	const { id } = useParams();
 	useEffect(() => {
-		loadPicklist(location, setActivePicklistId);
-	}, [location]);
+		if (id) {
+			if (activePicklistId) {
+				if (activePicklistId === id) {
+					return;
+				}
+			}
+			loadPicklist(id, setActivePicklistId);
+		}
+	}, [id]);
 
 	const handleBackOnClick = () => {
 		setActivePicklistId("");
-		navigate(`/lists`, { replace: true });
+		navigate(`/lists`);
 	};
 
 	const handleAddTeam = () => {

@@ -59,12 +59,12 @@ function App() {
 						<Route path="/profile" element={<ProfilePage />} />
 						<Route path="/lists" element={<ListsPage />} />
 						<Route path="/newlist" element={<NewListPage />} />
-						<Route path="/:id/list" element={<ListPage />} />
-						<Route path="/:id/selection" element={<SelectionPage />} />
-						<Route path="/:id/alliances" element={<AlliancesPage />} />
-						<Route path="/:id/share" element={<SharePage />} />
-						<Route path="/:id/addteam" element={<AddTeamPage />} />
-						<Route path="/:id/adduser/*" element={<AddUserPage />} />
+						<Route path="/list/:id/*" element={<ListPage />} />
+						<Route path="/selection/:id/*" element={<SelectionPage />} />
+						<Route path="/alliances/:id/*" element={<AlliancesPage />} />
+						<Route path="/share/:id/*" element={<SharePage />} />
+						<Route path="/addteam/:id/*" element={<AddTeamPage />} />
+						<Route path="/adduser/:id/:type" element={<AddUserPage />} />
 						<Route path="*" element={<ListsPage />} />
 					</>
 				) : (

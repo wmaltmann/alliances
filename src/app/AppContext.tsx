@@ -19,10 +19,6 @@ export interface AppContextData {
 		picklists: PicklistCore[] | undefined;
 		setPicklists: React.Dispatch<React.SetStateAction<PicklistCore[] | undefined>>;
 	};
-	bottomBar: {
-		state: number;
-		setState: React.Dispatch<React.SetStateAction<number>>;
-	};
 	alerts: Alerts;
 }
 
@@ -33,7 +29,6 @@ export const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children
 	const [activePicklist, setActivePicklist] = useState<Picklist | undefined>(undefined);
 	const [activePicklistId, setActivePicklistId] = useState<string>("");
 	const [picklists, setPicklists] = useState<PicklistCore[] | undefined>(undefined);
-	const [bottomBarState, setBottomBarState] = useState<number>(0);
 	const alerts = new Alerts();
 
 	const picklistETL = (
@@ -54,10 +49,6 @@ export const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children
 			setActivePicklistId,
 			picklists,
 			setPicklists,
-		},
-		bottomBar: {
-			state: bottomBarState,
-			setState: setBottomBarState,
 		},
 		alerts,
 	};

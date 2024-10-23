@@ -1,19 +1,32 @@
 import { Stack } from "@mui/material";
-import { FC, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { FC, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAppContext } from "../../app/AppContext";
 import ASButton from "../../components/common/ASButton";
 import ASTextField from "../../components/common/ASTextField";
 import Page from "../../components/page/Page";
 import TopBar from "../../components/page/TopBar";
-import { addTeamToPicklist } from "../../model/picklist/picklist.Manager";
+import { addTeamToPicklist, loadPicklist } from "../../model/picklist/picklist.Manager";
 
 const AddTeamPage: FC = () => {
 	const navigate = useNavigate();
 	const {
-		lists: { activePicklistId, activePicklist },
+		lists: { activePicklistId, activePicklist, setActivePicklistId },
 		alerts,
 	} = useAppContext();
+
+	const { id } = useParams();
+	useEffect(() => {
+		if (id) {
+			if (activePicklistId) {
+				if (activePicklistId === id) {
+					return;
+				}
+			}
+			loadPicklist(id, setActivePicklistId);
+		}
+	}, [id]);
+
 	const [name, setName] = useState<string>("");
 	const [number, setNumber] = useState<string>("");
 	const [rank, setRank] = useState<string>("");
@@ -36,11 +49,11 @@ const AddTeamPage: FC = () => {
 			console.log("apl", activePicklist);
 			try {
 				await addTeamToPicklist(activePicklist, name, number, Number(rank));
-				navigate(`/${activePicklist.id}/list`);
+				navigate(`/list/${id}`);
 			} catch (error) {
 				console.log(error);
 				alerts.addAlert("error", "Failed to add team", 15);
-				navigate(`/${activePicklist.id}/list`);
+				navigate(`/list/${id}`);
 			}
 		} else {
 			alerts.addAlert("error", "Picklist not found", 15);
@@ -49,7 +62,7 @@ const AddTeamPage: FC = () => {
 	};
 
 	const handleOnClickBack = () => {
-		navigate(`/${activePicklistId}/list`);
+		navigate(`/list//${id}`);
 	};
 
 	return (

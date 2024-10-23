@@ -1,29 +1,44 @@
 import { QrCodeScanner } from "@mui/icons-material";
 import { IconButton, Stack, Typography, useTheme } from "@mui/material";
 import QrScanner from "qr-scanner";
-import { FC, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { FC, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAppContext } from "../../app/AppContext";
 import ASButton from "../../components/common/ASButton";
 import QrReader from "../../components/common/QRReader";
 import Page from "../../components/page/Page";
 import TopBar from "../../components/page/TopBar";
-import { getLastSegmentOfUrl } from "../../libs/Utills";
-import { addUserToPicklist, createPicklistInvite } from "../../model/picklist/picklist.Manager";
+import {
+	addUserToPicklist,
+	createPicklistInvite,
+	loadPicklist,
+} from "../../model/picklist/picklist.Manager";
 import { PicklistInvite } from "../../model/picklist/picklist.Model";
 
 const AddUserPage: FC = () => {
 	const navigate = useNavigate();
 	const {
-		lists: { activePicklist },
+		lists: { activePicklist, activePicklistId, setActivePicklistId },
 	} = useAppContext();
+
+	const { id } = useParams();
+	useEffect(() => {
+		if (id) {
+			if (activePicklistId) {
+				if (activePicklistId === id) {
+					return;
+				}
+			}
+			loadPicklist(id, setActivePicklistId);
+		}
+	}, [id]);
+
 	const handleOnClickBack = () => {
 		setScanning("start");
-		navigate(-1);
+		navigate(`/share/${id}`);
 	};
 	const theme = useTheme();
-	const location = useLocation();
-	const tempType = getLastSegmentOfUrl(location);
+	const tempType = useParams().type;
 	let type: "owners" | "members" = "members";
 	if (tempType === "owners") {
 		type = "owners";
@@ -55,7 +70,7 @@ const AddUserPage: FC = () => {
 					inviteDate: new Date(),
 				};
 				await createPicklistInvite(invite);
-				navigate(`/${activePicklist.id}/share`);
+				navigate(`/share/${id}`);
 			} catch {
 				setScanning("error");
 			}

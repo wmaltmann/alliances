@@ -1,4 +1,3 @@
-import { Location } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import {
 	readFbDb,
@@ -7,7 +6,6 @@ import {
 	updateFbDb,
 	writeFbDb,
 } from "../../libs/FirebaseLib";
-import { getPickListIdFromPath } from "../../libs/Utills";
 import { User } from "../user/user.Model";
 import {
 	Alliance,
@@ -111,10 +109,9 @@ export const listenToPicklist = (
 };
 
 export const loadPicklist = (
-	location: Location,
+	picklistId: string,
 	setActivePicklistId: React.Dispatch<React.SetStateAction<string>>,
 ) => {
-	const picklistId = getPickListIdFromPath(location.pathname);
 	setActivePicklistId(picklistId);
 };
 

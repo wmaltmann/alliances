@@ -12,7 +12,7 @@ const EventList: React.FC<PicklistsProps> = ({ picklists }) => {
 	const theme = useTheme();
 
 	const handleItemClick = (id: string) => {
-		navigate(`/${id}/list`);
+		navigate(`/list/${id}`);
 	};
 
 	return (
