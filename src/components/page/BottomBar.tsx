@@ -1,39 +1,31 @@
 import { AccountTree, FormatListBulleted, GridView, Share } from "@mui/icons-material";
 import { BottomNavigation, BottomNavigationAction, Paper } from "@mui/material";
-import React, { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useAppContext } from "../../app/AppContext";
+import React from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { getFirstSegmentOfUrl } from "../../libs/Utills";
 
 const BottomBar: React.FC = () => {
-	const context = useAppContext();
-	const state = context.bottomBar.state;
-	const setState = context.bottomBar.setState;
-	const location = useLocation();
+	const { id } = useParams();
 	const navigate = useNavigate();
-	const currentPath = location.pathname;
+	const location = useLocation();
+	const segment = getFirstSegmentOfUrl(location);
 
-	const basePath = currentPath.split("/").slice(0, -1).join("/");
+	let state = 0;
 
-	useEffect(() => {
-		switch (state) {
-			case 3:
-				//Share
-				navigate(basePath + `/share`);
-				break;
-			case 1:
-				//Bracket
-				navigate(basePath + `/alliances`);
-				break;
-			case 2:
-				//Selection
-				navigate(basePath + `/selection`);
-				break;
-			default:
-				//List
-				navigate(basePath + `/list`);
-				break;
-		}
-	}, [state]);
+	switch (segment) {
+		case "share":
+			state = 3;
+			break;
+		case "selection":
+			state = 2;
+			break;
+		case "alliances":
+			state = 1;
+			break;
+		default:
+			state = 0;
+			break;
+	}
 
 	return (
 		<Paper
@@ -50,7 +42,24 @@ const BottomBar: React.FC = () => {
 			<BottomNavigation
 				value={state}
 				onChange={(event, newValue) => {
-					setState(newValue);
+					switch (newValue) {
+						case 3:
+							//Share
+							navigate(`/share/${id}`);
+							break;
+						case 1:
+							//Alliances
+							navigate(`/alliances/${id}`);
+							break;
+						case 2:
+							//Selection
+							navigate(`/selection/${id}`);
+							break;
+						default:
+							//List
+							navigate(`/list/${id}`);
+							break;
+					}
 				}}
 				showLabels
 			>

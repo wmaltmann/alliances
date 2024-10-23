@@ -18,14 +18,6 @@ export const getRandomColor = () => {
 	return colors[randomIndex];
 };
 
-export const getPickListIdFromPath = (url: string): string => {
-	const regex = /^\/([^/]+)\/[a-zA-Z0-9*]+$/;
-	const match = url.match(regex);
-	return match ? match[1] : "";
-};
-
-export const getLastSegmentOfUrl = (location: Location): string => {
-	const path: string = location.pathname;
-	const segments: string[] = path.split("/").filter(Boolean);
-	return segments[segments.length - 1];
+export const getFirstSegmentOfUrl = (location: Location): string => {
+	return location.pathname.split("/")[1];
 };

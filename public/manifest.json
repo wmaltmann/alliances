@@ -1,6 +1,6 @@
 {
-	"short_name": "Alliance Selector",
-	"name": "Alliance Selector",
+	"short_name": "Alliances",
+	"name": "Alliances",
 	"icons": [
 		{
 			"src": "favicon.ico",
@@ -22,5 +22,5 @@
 	"display": "standalone",
 	"theme_color": "#AF2EFF",
 	"background_color": "#ffffff",
-	"description": "Create a pick-list and update your representative in real-time during alliance selection for FRC"
+	"description": "Create a pick-list and update your team representative in real-time during alliance selection."
 }
