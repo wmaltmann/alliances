@@ -1,12 +1,12 @@
 import { Add, Delete } from "@mui/icons-material";
 import { IconButton, Stack, Typography, useTheme } from "@mui/material";
-import { FC } from "react";
-import { useNavigate } from "react-router-dom";
+import { FC, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAppContext } from "../../app/AppContext";
 import BottomBar from "../../components/page/BottomBar";
 import Page from "../../components/page/Page";
 import TopBar from "../../components/page/TopBar";
-import { removeUserFromPicklist } from "../../model/picklist/picklist.Manager";
+import { loadPicklist, removeUserFromPicklist } from "../../model/picklist/picklist.Manager";
 
 const SharePage: FC = () => {
 	const navigate = useNavigate();
@@ -15,8 +15,20 @@ const SharePage: FC = () => {
 		navigate(`/lists`);
 	};
 	const {
-		lists: { activePicklist },
+		lists: { activePicklist, activePicklistId, setActivePicklistId },
 	} = useAppContext();
+
+	const { id } = useParams();
+	useEffect(() => {
+		if (id) {
+			if (activePicklistId) {
+				if (activePicklistId === id) {
+					return;
+				}
+			}
+			loadPicklist(id, setActivePicklistId);
+		}
+	}, [id]);
 
 	const removeUser = async (type: "owners" | "members", id: string) => {
 		try {
@@ -29,7 +41,7 @@ const SharePage: FC = () => {
 	};
 	const addUser = async (type: "owners" | "members") => {
 		if (activePicklist) {
-			navigate(`/${activePicklist.id}/adduser/${type}`);
+			navigate(`/adduser/${activePicklist.id}/${type}`);
 		}
 	};
 	return (

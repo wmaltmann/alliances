@@ -1,14 +1,14 @@
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 import { Box } from "@mui/material";
-import { FC } from "react";
-import { useNavigate } from "react-router-dom";
+import { FC, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAppContext } from "../../app/AppContext";
 import AllianceDragBox from "../../components/common/AllianceDragBox";
 import AllianceList from "../../components/common/AllianceList";
 import BottomBar from "../../components/page/BottomBar";
 import Page from "../../components/page/Page";
 import TopBar from "../../components/page/TopBar";
-import { addTeamToAlliance } from "../../model/picklist/picklist.Manager";
+import { addTeamToAlliance, loadPicklist } from "../../model/picklist/picklist.Manager";
 import { getAvailableTeams, sortTeamsByRank } from "../../model/picklist/picklist.Utils";
 
 const AlliancePage: FC = () => {
@@ -17,8 +17,20 @@ const AlliancePage: FC = () => {
 		navigate(`/lists`);
 	};
 	const {
-		lists: { activePicklist },
+		lists: { activePicklist, activePicklistId, setActivePicklistId },
 	} = useAppContext();
+
+	const { id } = useParams();
+	useEffect(() => {
+		if (id) {
+			if (activePicklistId) {
+				if (activePicklistId === id) {
+					return;
+				}
+			}
+			loadPicklist(id, setActivePicklistId);
+		}
+	}, [id]);
 
 	const availableTeams = sortTeamsByRank(getAvailableTeams(activePicklist));
 

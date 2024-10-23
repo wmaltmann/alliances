@@ -1,12 +1,13 @@
 import { Box, Stack, useTheme } from "@mui/material";
-import { FC } from "react";
-import { useNavigate } from "react-router-dom";
+import { FC, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAppContext } from "../../app/AppContext";
 import TeamDivider from "../../components/common/TeamDivider";
 import TeamListItem from "../../components/common/TeamListItem";
 import BottomBar from "../../components/page/BottomBar";
 import Page from "../../components/page/Page";
 import TopBar from "../../components/page/TopBar";
+import { loadPicklist } from "../../model/picklist/picklist.Manager";
 import { getAvailableTeams, getTeamsByCategory } from "../../model/picklist/picklist.Utils";
 
 const SelectionPage: FC = () => {
@@ -16,8 +17,20 @@ const SelectionPage: FC = () => {
 	};
 	const theme = useTheme();
 	const {
-		lists: { activePicklist },
+		lists: { activePicklist, activePicklistId, setActivePicklistId },
 	} = useAppContext();
+	const { id } = useParams();
+	useEffect(() => {
+		if (id) {
+			if (activePicklistId) {
+				if (activePicklistId === id) {
+					return;
+				}
+			}
+			loadPicklist(id, setActivePicklistId);
+		}
+	}, [id]);
+
 	const availableTeams = getAvailableTeams(activePicklist);
 
 	const pickTeams = getTeamsByCategory(availableTeams, "pick");
