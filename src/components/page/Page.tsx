@@ -7,7 +7,7 @@ interface PageProps extends HTMLAttributes<HTMLDivElement> {
 
 const Page: React.FC<PageProps> = ({ children, ...props }) => {
 	return (
-		<Box {...props} sx={{ height: "100vh" }}>
+		<Box {...props} sx={{ height: "100dvh" }}>
 			{children}
 		</Box>
 	);
