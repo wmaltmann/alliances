@@ -41,7 +41,6 @@ const AddTeamPage: FC = () => {
 	const handleCreatePicklist = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		if (activePicklist) {
-			console.log("apl", activePicklist);
 			try {
 				await addTeamToPicklist(activePicklist, name, number, 0);
 				navigate(`/list/${id}`);
