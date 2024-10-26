@@ -95,9 +95,9 @@ export const LoginPage = () => {
 						<ASLink text="Forgot password?" onClick={handleForgotPassword} />
 					</Typography>
 					<ASButton type="submit" text="Sign in" />
-					<Typography variant="body2">
-						<Divider>Or</Divider>
-					</Typography>
+					<Divider>
+						<Typography variant="body2">Or</Typography>
+					</Divider>
 					<img
 						src={SignInWithGoogleButton}
 						alt={"Sign in with Google"}

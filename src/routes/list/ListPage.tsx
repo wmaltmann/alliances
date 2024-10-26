@@ -48,7 +48,12 @@ const ListPage: FC = () => {
 					)}
 				</Stack>
 				{(activePicklist?.permission || "") === "owner" && (
-					<FloatingButton text="Add Team" bottomMenu extended onClick={handleAddTeam} />
+					<FloatingButton
+						text="Add Team"
+						bottomMenu
+						extended={(activePicklist?.teams.length || 0) < 2}
+						onClick={handleAddTeam}
+					/>
 				)}
 			</Page>
 			<BottomBar />
