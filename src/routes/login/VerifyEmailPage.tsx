@@ -38,7 +38,7 @@ export const VerifyEmailPage = () => {
 					color={theme.palette.primary.main}
 					paddingTop={theme.spacing(6)}
 				>
-					Alliance Selector
+					Alliances
 				</Typography>
 				<Stack spacing={3} width="300px">
 					<Typography variant="h3">Please verify your email address</Typography>

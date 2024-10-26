@@ -6,6 +6,7 @@ import SignInWithGoogleButton from "../../assets/google/web_light_sq_SI.svg";
 import ASButton from "../../components/common/ASButton";
 import ASLink from "../../components/common/ASLink";
 import ASTextField from "../../components/common/ASTextField";
+import LegalLinks from "../../components/common/LegalLinks";
 import Page from "../../components/page/Page";
 import { loginWithPassword, signInWithGoogle } from "../../libs/AuthLib";
 
@@ -65,7 +66,7 @@ export const LoginPage = () => {
 					color={theme.palette.primary.main}
 					paddingTop={theme.spacing(6)}
 				>
-					Alliance Selector
+					Alliances
 				</Typography>
 				<Stack spacing={3} component="form" onSubmit={handleLogin} width="300px">
 					<Typography variant="body1">Login</Typography>
@@ -95,6 +96,9 @@ export const LoginPage = () => {
 						<ASLink text="Forgot password?" onClick={handleForgotPassword} />
 					</Typography>
 					<ASButton type="submit" text="Sign in" />
+					<Typography variant="body2" paddingBottom={theme.spacing(2)} textAlign="center">
+						Don't have an account? <ASLink text="Sign up" onClick={handleSignUp} />
+					</Typography>
 					<Divider>
 						<Typography variant="body2">Or</Typography>
 					</Divider>
@@ -107,9 +111,9 @@ export const LoginPage = () => {
 						style={{ cursor: "pointer", height: "40px" }}
 					/>
 				</Stack>
-				<Typography variant="body2" paddingBottom={theme.spacing(2)}>
-					Don't have an account? <ASLink text="Sign up" onClick={handleSignUp} />
-				</Typography>
+				<Stack width="100%" alignItems="center">
+					<LegalLinks />
+				</Stack>
 			</Stack>
 		</Page>
 	);

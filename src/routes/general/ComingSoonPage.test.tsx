@@ -1,4 +1,4 @@
-import { render, screen } from "../test-utils";
+import { render, screen } from "../../test-utils";
 import ComingSoonPage from "./ComingSoonPage";
 
 test("renders Typography elements with specific text", () => {
