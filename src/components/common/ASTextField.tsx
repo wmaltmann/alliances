@@ -10,7 +10,7 @@ interface EmailFieldProps {
 	onChange?: React.ChangeEventHandler<HTMLInputElement>;
 	onBlur?: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
 	required?: boolean;
-	type?: "text" | "email" | "password";
+	type?: "text" | "email" | "password" | "number";
 	fullWidth?: boolean;
 	showCapsLock?: boolean;
 	error?: string;
