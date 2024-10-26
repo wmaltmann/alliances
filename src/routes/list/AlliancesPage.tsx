@@ -9,7 +9,7 @@ import BottomBar from "../../components/page/BottomBar";
 import Page from "../../components/page/Page";
 import TopBar from "../../components/page/TopBar";
 import { addTeamToAlliance, loadPicklist } from "../../model/picklist/picklist.Manager";
-import { getAvailableTeams, sortTeamsByRank } from "../../model/picklist/picklist.Utils";
+import { getAvailableTeams, sortTeamsByTeamNumber } from "../../model/picklist/picklist.Utils";
 
 const AlliancePage: FC = () => {
 	const navigate = useNavigate();
@@ -32,7 +32,7 @@ const AlliancePage: FC = () => {
 		}
 	}, [id]);
 
-	const availableTeams = sortTeamsByRank(getAvailableTeams(activePicklist));
+	const availableTeams = sortTeamsByTeamNumber(getAvailableTeams(activePicklist));
 
 	const onDragEnd = async (result: DropResult<string>) => {
 		const regex = /\d+-alliance/;
