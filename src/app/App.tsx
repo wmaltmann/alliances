@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { autoLogin } from "../libs/AuthLib";
 import { fbAuth } from "../libs/FirebaseLib";
 import { listenToPicklist } from "../model/picklist/picklist.Manager";
@@ -65,7 +65,7 @@ function App() {
 						<Route path="/share/:id/*" element={<SharePage />} />
 						<Route path="/addteam/:id/*" element={<AddTeamPage />} />
 						<Route path="/adduser/:id/:type" element={<AddUserPage />} />
-						<Route path="*" element={<ListsPage />} />
+						<Route path="*" element={<Navigate to="/lists" />} />
 					</>
 				) : (
 					<>
