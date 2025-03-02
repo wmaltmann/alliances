@@ -2,6 +2,9 @@
 # https://github.com/firebase/firebase-tools
 
 name: Deploy to Production
+permissions:
+    contents: read
+    pull-requests: write
 on:
     push:
         branches:
@@ -27,8 +30,17 @@ jobs:
             - name: Check Lint
               run: npm run lint
 
-            - run: npm run build
-            - uses: FirebaseExtended/action-hosting-deploy@v0
+            - name: Create .env file
+              run: |
+                  echo "REACT_APP_STAGE=${{ secrets.PROD_STAGE }}" >> .env
+                  echo "REACT_APP_FIREBASE_PROD_API_KEY=${{ secrets.FIREBASE_PROD_API_KEY }}" >> .env
+                  echo "REACT_APP_FIREBASE_PROD_AUTH_DOMAIN=${{ secrets.FIREBASE_PROD_AUTH_DOMAIN }}" >> .env
+
+            - name: Build
+              run: npm run build
+
+            - name: Deploy to Firebase Hosting
+              uses: FirebaseExtended/action-hosting-deploy@v0
               with:
                   repoToken: ${{ secrets.GITHUB_TOKEN }}
                   firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_ALLIANCE_SELECTOR_D9518 }}

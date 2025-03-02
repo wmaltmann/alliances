@@ -15,6 +15,44 @@ declare module "@mui/system" {
 	}
 }
 
+declare module "@mui/material/styles" {
+	interface TypographyVariants {
+		error1: React.CSSProperties;
+		error2: React.CSSProperties;
+		body3: React.CSSProperties;
+	}
+
+	interface TypographyVariantsOptions {
+		error1?: React.CSSProperties;
+		error2?: React.CSSProperties;
+		body3?: React.CSSProperties;
+	}
+	interface Palette {
+		chip: {
+			pick: string;
+			neutral: string;
+			doNotPick: string;
+			unassigned: string;
+		};
+	}
+	interface PaletteOptions {
+		chip?: {
+			pick?: string;
+			neutral?: string;
+			doNotPick?: string;
+			unassigned?: string;
+		};
+	}
+}
+
+declare module "@mui/material/Typography" {
+	interface TypographyPropsVariantOverrides {
+		error1: true;
+		error2: true;
+		body3: true;
+	}
+}
+
 const typography: TypographyOptions = {
 	fontFamily: "Poppins",
 	h1: {
@@ -45,9 +83,55 @@ const typography: TypographyOptions = {
 		fontSize: 16,
 		fontWeight: "bold",
 	},
+	error1: {
+		fontSize: 14,
+		fontFamily: "Poppins",
+		color: "#d32f2f",
+	},
+	error2: {
+		fontSize: 14,
+		fontFamily: "Poppins",
+		color: "#d32f2f",
+	},
+	body1: {
+		fontSize: 16,
+	},
+	body2: {
+		fontSize: 14,
+	},
+	body3: {
+		fontSize: 12,
+	},
 };
 
-export const themeLight = createTheme({
+// export const themeLight = createTheme({
+// 	palette: {
+// 		primary: {
+// 			main: "#af2eff",
+// 		},
+// 		secondary: {
+// 			main: "#358a00",
+// 		},
+// 		text: {
+// 			primary: "#050505",
+// 			secondary: "#050505",
+// 			disabled: "#050505",
+// 		},
+// 		background: {
+// 			default: "#ffffff",
+// 			paper: "#0f0f0f",
+// 		},
+// 	},
+// 	typography: typography,
+// 	breakpoints: {
+// 		values: {
+// 			mobile: 0,
+// 			desktop: 1280,
+// 		},
+// 	},
+// });
+
+export const themeDark = createTheme({
 	palette: {
 		primary: {
 			main: "#af2eff",
@@ -60,35 +144,23 @@ export const themeLight = createTheme({
 			secondary: "#ffffff",
 			disabled: "#ffffff",
 		},
-	},
-	typography: typography,
-	breakpoints: {
-		values: {
-			mobile: 0,
-			desktop: 1024,
+		background: {
+			default: "#0f0f0f",
+			paper: "#2B2B2B",
 		},
-	},
-});
-
-export const themeDark = createTheme({
-	palette: {
-		primary: {
-			main: "#af2eff",
-		},
-		secondary: {
-			main: "#358a00",
-		},
-		text: {
-			primary: "#050505",
-			secondary: "#050505",
-			disabled: "#050505",
+		chip: {
+			pick: "#006600",
+			neutral: "#856F00",
+			doNotPick: "#A30000",
+			unassigned: "#595959",
 		},
 	},
 	typography: typography,
 	breakpoints: {
 		values: {
 			mobile: 0,
-			desktop: 1024,
+			desktop: 1280,
 		},
 	},
+	spacing: 4,
 });

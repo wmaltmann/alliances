@@ -1,15 +1,13 @@
 import { Box } from "@mui/material";
-import React, { ReactNode } from "react";
-import TopBar from "./TopBar";
+import React, { HTMLAttributes, ReactNode } from "react";
 
-type PageProps = {
+interface PageProps extends HTMLAttributes<HTMLDivElement> {
 	children: ReactNode;
-};
+}
 
-const Page: React.FC<PageProps> = ({ children }) => {
+const Page: React.FC<PageProps> = ({ children, ...props }) => {
 	return (
-		<Box height="100%">
-			<TopBar />
+		<Box {...props} sx={{ height: "100dvh" }}>
 			{children}
 		</Box>
 	);

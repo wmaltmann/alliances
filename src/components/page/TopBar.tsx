@@ -1,57 +1,59 @@
-import { AccountCircle, Menu } from "@mui/icons-material";
-import { AppBar, Button, IconButton, Toolbar, Typography } from "@mui/material";
-import { FC, useEffect } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { useNavigate } from "react-router-dom";
-import { useAppContext } from "../../app/AppContext";
-import { signOut } from "../../libs/AuthLib";
-import { auth as fbAuth } from "../../libs/FirebaseLib";
+import { ArrowBackIosNew, FilterList } from "@mui/icons-material";
+import { AppBar, IconButton, TextField, Toolbar, Typography, useTheme } from "@mui/material";
+import React from "react";
 
-const TopBar: FC = () => {
-	const [user] = useAuthState(fbAuth);
-	const { auth } = useAppContext();
-	const navigate = useNavigate();
+interface TopBarProps {
+	onClickBack: React.MouseEventHandler<HTMLButtonElement>;
+	headerText?: string;
+	variant?: "back" | "filter" | "header";
+}
 
-	useEffect(() => {
-		if (user) {
-			auth.setUser(user);
-		} else auth.setUser(undefined);
-	}, [user]);
-
-	const handleLoginClick = () => {
-		navigate("/login");
-	};
-
-	const handleLogoutClick = async () => {
-		await signOut(navigate, auth);
-	};
+const TopBar: React.FC<TopBarProps> = ({ onClickBack, variant = "back", headerText = "" }) => {
+	const theme = useTheme();
 
 	return (
-		<AppBar position="static">
+		<AppBar
+			position="fixed"
+			sx={{
+				top: 0,
+				left: 0,
+				right: 0,
+				zIndex: 2,
+				height: "60px",
+				backgroundColor: theme.palette.background.default,
+				color: theme.palette.text.primary,
+			}}
+		>
 			<Toolbar>
-				<IconButton
-					size="large"
-					edge="start"
-					color="inherit"
-					aria-label="menu"
-					sx={{ mr: 2 }}
-				>
-					<Menu />
+				<IconButton edge="start" color="primary" aria-label="back" onClick={onClickBack}>
+					<ArrowBackIosNew />
 				</IconButton>
-				<Typography variant="h1" component="div" sx={{ flexGrow: 1 }}>
-					Alliance Selector
-				</Typography>
-				{auth.user ? (
+				{variant === "header" && (
+					<Typography
+						variant="h2"
+						color="primary.main"
+						sx={{ flexGrow: 1, textAlign: "center" }}
+						paddingRight="40px"
+					>
+						{headerText}
+					</Typography>
+				)}
+				{variant === "filter" && (
 					<>
-						<AccountCircle />
-						<Button color="inherit" onClick={handleLogoutClick}>
-							Logout
-						</Button>
+						<TextField
+							variant="outlined"
+							placeholder="Search"
+							sx={{ flexGrow: 1, marginX: 2 }}
+							InputProps={{
+								inputProps: {
+									style: { textAlign: "center" },
+								},
+							}}
+						/>
+						<IconButton edge="end" aria-label="filter" color="primary">
+							<FilterList />
+						</IconButton>
 					</>
-				) : (
-					<Button color="inherit" onClick={handleLoginClick}>
-						Login
-					</Button>
 				)}
 			</Toolbar>
 		</AppBar>

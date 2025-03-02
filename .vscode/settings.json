@@ -40,5 +40,10 @@
     "editor.codeActionsOnSave": {
       "source.organizeImports": "explicit"
     }
-  }
+  },
+  "cSpell.words": [
+    "Passwordless",
+    "Picklist",
+    "picklists",
+  ]
 }
