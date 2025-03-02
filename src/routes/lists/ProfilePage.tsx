@@ -5,6 +5,7 @@ import { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../../app/AppContext";
 import ASButton from "../../components/common/ASButton";
+import LegalLinks from "../../components/common/LegalLinks";
 import Page from "../../components/page/Page";
 import TopBar from "../../components/page/TopBar";
 import { signOut } from "../../libs/AuthLib";
@@ -41,7 +42,7 @@ const ProfilePage: FC = () => {
 		<Page>
 			<TopBar onClickBack={handleOnClickBack} variant="header" headerText="Profile" />
 			<Stack height="100%" padding={theme.spacing(2)} paddingTop="60px">
-				<Stack spacing={6}>
+				<Stack spacing={8}>
 					<Typography>{`Email: ${user?.profile.email}`} </Typography>
 					<Box alignSelf="center" border="10px solid" bgcolor="#ffffff">
 						{qrValue ? (
@@ -58,6 +59,7 @@ const ProfilePage: FC = () => {
 					</Box>
 
 					<ASButton text="Log Out" onClick={() => handleLogoutClick()}></ASButton>
+					<LegalLinks />
 				</Stack>
 			</Stack>
 		</Page>

@@ -26,7 +26,7 @@ const PolicyPage: FC = () => {
 					<Typography variant="h1" color="primary" paddingBottom={theme.spacing(2)}>
 						Privacy Policy
 					</Typography>
-					<Typography paddingBottom={theme.spacing(3)}>Updated: Oct 26, 2024</Typography>
+					<Typography paddingBottom={theme.spacing(3)}>Updated: Mar 2, 2025</Typography>
 					<Typography variant="h2" paddingBottom={theme.spacing(1)}>
 						The Short Version
 					</Typography>
@@ -61,14 +61,19 @@ const PolicyPage: FC = () => {
 						Information from users with accounts
 					</Typography>
 					<Typography variant="body2" padding={theme.spacing(1)}>
-						We use Google sign-in for our accounts. If you create an account with us,
-						only your email address is shared with us, not your password or any other
-						personal information. You also have the option to give us more information,
-						such as your name, which may include "User Personal Information." Why do we
-						collect this? We use your name to personalize your experience with
-						Alliances. We use your email address as a way to identify you across devices
-						so that you can have a consistent experience across Alliances. We use your
-						email to communicate with you with information regarding your account.
+						We use your email address or Google sign-in for our accounts. If you create
+						an account with us, only your email address is shared with us, not your
+						password or any other personal information. You also have the option to give
+						us more information, such as your name, which may include "User Personal
+						Information." Why do we collect this? We use your name to personalize your
+						experience with Alliances. We use your email address as a way to identify
+						you across devices so that you can have a consistent experience across
+						Alliances. We use your email to communicate with you with information
+						regarding your account.Data entered into Alliances is private to your
+						account and will not be distributed or made available to other accounts. If
+						your data is aggregated for analysis, it will be anonymized at a time of no
+						less than 2 months after the creation of the picklist. There is no
+						guaranteed data history.
 					</Typography>
 					<Divider sx={{ borderColor: "background.paper", padding: theme.spacing(1) }} />
 					<Typography variant="h2" paddingBottom={theme.spacing(1)}>
@@ -168,15 +173,19 @@ const PolicyPage: FC = () => {
 					<Typography variant="h2" paddingBottom={theme.spacing(1)}>
 						Contact
 					</Typography>
-					<Typography variant="body2" padding={theme.spacing(1)}>
-						<ASLink
-							text="Contact us"
-							onClick={() => {
-								navigate("/about");
-							}}
-						/>{" "}
-						if you have questions regarding our Privacy Policy.
-					</Typography>
+					For questions please open an issue on{" "}
+					<ASLink
+						text="GitHub"
+						onClick={() => {
+							window.open(
+								"https://github.com/wmaltmann/alliances/issues",
+								"_blank",
+								"noopener,noreferrer",
+							);
+						}}
+						variant="body2"
+					/>
+					.
 				</Box>
 				<LegalLinks />
 			</Stack>
