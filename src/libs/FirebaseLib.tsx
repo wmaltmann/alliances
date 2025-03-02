@@ -5,8 +5,8 @@ import { getAppStage } from "../app/AppUtils";
 import { FbDbPicklist } from "../model/picklist/picklist.Model";
 
 const DEV_CONFIG = {
-	apiKey: "AIzaSyADZYyWAe6YydGBcrTfoTgJNyoJoLBsVh4",
-	authDomain: "alliance-selector-beta.firebaseapp.com",
+	apiKey: process.env.REACT_APP_FIREBASE_DEV_API_KEY,
+	authDomain: process.env.REACT_APP_FIREBASE_DEV_AUTH_DOMAIN,
 	databaseURL: "https://alliance-selector-beta-default-rtdb.firebaseio.com",
 	projectId: "alliance-selector-beta",
 	storageBucket: "alliance-selector-beta.appspot.com",
@@ -15,8 +15,8 @@ const DEV_CONFIG = {
 };
 
 const PROD_CONFIG = {
-	apiKey: "AIzaSyDhHO7NY6zq87AG0QHdcDmJss8hNmZjSfo",
-	authDomain: "alliance-selector-d9518.firebaseapp.com",
+	apiKey: process.env.REACT_APP_FIREBASE_PROD_API_KEY,
+	authDomain: process.env.REACT_APP_FIREBASE_PROD_AUTH_DOMAIN,
 	databaseURL: "https://alliance-selector-d9518-default-rtdb.firebaseio.com",
 	projectId: "alliance-selector-d9518",
 	storageBucket: "alliance-selector-d9518.appspot.com",
