@@ -2,13 +2,12 @@ import { Divider, Stack, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../../app/AppContext";
-import SignInWithGoogleButton from "../../assets/google/web_light_sq_SI.svg";
 import ASButton from "../../components/common/ASButton";
 import ASLink from "../../components/common/ASLink";
 import ASTextField from "../../components/common/ASTextField";
 import LegalLinks from "../../components/common/LegalLinks";
 import Page from "../../components/page/Page";
-import { loginWithPassword, signInWithGoogle } from "../../libs/AuthLib";
+import { loginWithPassword } from "../../libs/AuthLib";
 
 export const LoginPage = () => {
 	const theme = useTheme();
@@ -68,7 +67,7 @@ export const LoginPage = () => {
 				>
 					Alliances
 				</Typography>
-				<Stack spacing={3} component="form" onSubmit={handleLogin} width="300px">
+				<Stack spacing={4} component="form" onSubmit={handleLogin} width="300px">
 					<Typography variant="body1">Login</Typography>
 					<ASTextField
 						required
@@ -96,20 +95,20 @@ export const LoginPage = () => {
 						<ASLink text="Forgot password?" onClick={handleForgotPassword} />
 					</Typography>
 					<ASButton type="submit" text="Sign in" />
-					<Typography variant="body2" paddingBottom={theme.spacing(2)} textAlign="center">
-						Don't have an account? <ASLink text="Sign up" onClick={handleSignUp} />
-					</Typography>
 					<Divider>
 						<Typography variant="body2">Or</Typography>
 					</Divider>
-					<img
+					<Typography variant="body2" paddingBottom={theme.spacing(2)} textAlign="center">
+						Don't have an account? <ASLink text="Sign up" onClick={handleSignUp} />
+					</Typography>
+					{/* <img
 						src={SignInWithGoogleButton}
 						alt={"Sign in with Google"}
 						onClick={() => {
 							void signInWithGoogle();
 						}}
 						style={{ cursor: "pointer", height: "40px" }}
-					/>
+					/> */}
 				</Stack>
 				<Stack width="100%" alignItems="center">
 					<LegalLinks />
