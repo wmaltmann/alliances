@@ -32,13 +32,12 @@ jobs:
 
             - name: Create .env file
               run: |
-                echo "REACT_APP_STAGE=${{ secrets.PROD_STAGE }}" >> .env
-                echo "REACT_APP_FIREBASE_PROD_API_KEY=${{ secrets.FIREBASE_PROD_API_KEY }}" >> .env
-                echo "REACT_APP_FIREBASE_PROD_AUTH_DOMAIN=${{ secrets.FIREBASE_PROD_AUTH_DOMAIN }}" >> .env
+                  echo "REACT_APP_STAGE=${{ secrets.PROD_STAGE }}" >> .env
+                  echo "REACT_APP_FIREBASE_PROD_API_KEY=${{ secrets.FIREBASE_PROD_API_KEY }}" >> .env
+                  echo "REACT_APP_FIREBASE_PROD_AUTH_DOMAIN=${{ secrets.FIREBASE_PROD_AUTH_DOMAIN }}" >> .env
 
             - name: Build
               run: npm run build
-              run: ls -la
 
             - name: Deploy to Firebase Hosting
               uses: FirebaseExtended/action-hosting-deploy@v0
