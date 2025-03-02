@@ -33,7 +33,7 @@ const ListPage: FC = () => {
 	};
 
 	const handleAddTeam = () => {
-		navigate(`/${activePicklistId}/addteam`);
+		navigate(`/addteam/${activePicklistId}`);
 	};
 
 	return (
