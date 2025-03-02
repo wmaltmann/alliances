@@ -29,6 +29,10 @@ export const sortTeamsByRank = (teams: Team[]) => {
 	return teams.sort((a, b) => a.rank - b.rank);
 };
 
+export const sortTeamsByTeamNumber = (teams: Team[]) => {
+	return teams.sort((a, b) => Number(a.number) - Number(b.number));
+};
+
 export const getTeamsByCategory = (teams: Team[], category: TeamCategory): Team[] => {
 	return teams.filter((team) => team.category === category);
 };

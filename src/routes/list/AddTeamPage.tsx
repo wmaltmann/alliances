@@ -29,7 +29,6 @@ const AddTeamPage: FC = () => {
 
 	const [name, setName] = useState<string>("");
 	const [number, setNumber] = useState<string>("");
-	const [rank, setRank] = useState<string>("");
 
 	const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setName(event.target.value);
@@ -39,16 +38,11 @@ const AddTeamPage: FC = () => {
 		setNumber(event.target.value);
 	};
 
-	const handleChangeRank = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setRank(event.target.value);
-	};
-
 	const handleCreatePicklist = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		if (activePicklist) {
-			console.log("apl", activePicklist);
 			try {
-				await addTeamToPicklist(activePicklist, name, number, Number(rank));
+				await addTeamToPicklist(activePicklist, name, number, 0);
 				navigate(`/list/${id}`);
 			} catch (error) {
 				console.log(error);
@@ -74,7 +68,7 @@ const AddTeamPage: FC = () => {
 						required
 						id="number"
 						label="Team Number"
-						type="text"
+						type="number"
 						value={number}
 						onChange={handleChangeNumber}
 						fullWidth
@@ -86,15 +80,6 @@ const AddTeamPage: FC = () => {
 						type="text"
 						value={name}
 						onChange={handleChangeName}
-						fullWidth
-					/>
-					<ASTextField
-						required
-						id="rank"
-						label="Rank"
-						type="text"
-						value={rank}
-						onChange={handleChangeRank}
 						fullWidth
 					/>
 					<ASButton type="submit" text="Add Team" />
