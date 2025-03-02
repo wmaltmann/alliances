@@ -36,9 +36,6 @@ jobs:
                   echo "REACT_APP_FIREBASE_DEV_API_KEY=${{ secrets.FIREBASE_DEV_API_KEY }}" >> .env
                   echo "REACT_APP_FIREBASE_DEV_AUTH_DOMAIN=${{ secrets.FIREBASE_DEV_AUTH_DOMAIN }}" >> .env
 
-            - name: debug
-              run: ls -la
-
             - name: Build
               run: npm run build
 
