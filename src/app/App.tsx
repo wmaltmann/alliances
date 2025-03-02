@@ -1,9 +1,12 @@
 import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { autoLogin } from "../libs/AuthLib";
 import { fbAuth } from "../libs/FirebaseLib";
 import { listenToPicklist } from "../model/picklist/picklist.Manager";
+import AboutPage from "../routes/general/AboutPage";
+import PolicyPage from "../routes/general/PolicyPage";
+import TermsPage from "../routes/general/TermsPage";
 import AddTeamPage from "../routes/list/AddTeamPage";
 import AddUserPage from "../routes/list/AddUserPage";
 import AlliancesPage from "../routes/list/AlliancesPage";
@@ -65,7 +68,10 @@ function App() {
 						<Route path="/share/:id/*" element={<SharePage />} />
 						<Route path="/addteam/:id/*" element={<AddTeamPage />} />
 						<Route path="/adduser/:id/:type" element={<AddUserPage />} />
-						<Route path="*" element={<ListsPage />} />
+						<Route path="/about" element={<AboutPage />} />
+						<Route path="/terms" element={<TermsPage />} />
+						<Route path="/privacypolicy" element={<PolicyPage />} />
+						<Route path="*" element={<Navigate to="/lists" />} />
 					</>
 				) : (
 					<>
@@ -73,6 +79,9 @@ function App() {
 						<Route path="/signup" element={<SignUpPage />} />
 						<Route path="/verifyemail" element={<VerifyEmailPage />} />
 						<Route path="/passwordlesslogin" element={<PasswordlessLoginPage />} />
+						<Route path="/about" element={<AboutPage />} />
+						<Route path="/terms" element={<TermsPage />} />
+						<Route path="/privacypolicy" element={<PolicyPage />} />
 						<Route path="*" element={<LoginPage />} />
 					</>
 				)}

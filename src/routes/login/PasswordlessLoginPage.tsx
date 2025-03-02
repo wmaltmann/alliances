@@ -76,7 +76,7 @@ export const LoginPage = () => {
 					color={theme.palette.primary.main}
 					paddingTop={theme.spacing(5)}
 				>
-					Alliance Selector
+					Alliances
 				</Typography>
 				{state === "loading" && <Loading />}
 				{state === "login" && (

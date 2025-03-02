@@ -94,7 +94,7 @@ export const SignUpPage = () => {
 					color={theme.palette.primary.main}
 					paddingTop={theme.spacing(6)}
 				>
-					Alliance Selector
+					Alliances
 				</Typography>
 				<Stack spacing={3} component="form" onSubmit={handleSignUp} width="300px">
 					<Typography variant="body1">Sign up</Typography>

@@ -1,7 +1,6 @@
 import { Stack, Typography } from "@mui/material";
 import { FC } from "react";
-import Page from "../components/page/Page";
-
+import Page from "../../components/page/Page";
 const ComingSoonPage: FC = () => {
 	return (
 		<Page>
