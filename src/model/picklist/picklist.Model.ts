@@ -9,6 +9,7 @@ export interface Picklist extends PicklistCore {
 	owners: ID[];
 	members: ID[];
 	alliances: Alliance[];
+	tags: string[];
 }
 
 export type PicklistPermission = "member" | "owner" | "none";
@@ -28,6 +29,7 @@ export interface FbDbPicklist {
 	owners: { [key: string]: string };
 	members: { [key: string]: string };
 	alliances: { [key: string]: FbDbAlliance };
+	tags: string[];
 }
 
 export interface ID {

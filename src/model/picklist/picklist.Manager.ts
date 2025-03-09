@@ -143,6 +143,7 @@ export const migratePicklist = (
 		alliances: fbDbPicklist.alliances
 			? convertFbDbAlliancesToAlliances(fbDbPicklist.alliances)
 			: [],
+		tags: fbDbPicklist.tags,
 	};
 	return picklist;
 };
@@ -182,7 +183,7 @@ const convertTeamsToFbDBTeams = (teams: Team[]): { [key: string]: FbDbTeam } => 
 			category: team.category,
 			listPosition: team.listPosition,
 			rank: team.rank,
-			tags: team.tags,
+			tags: team.tags ?? {},
 		};
 		return acc;
 	}, {});

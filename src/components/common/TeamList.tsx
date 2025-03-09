@@ -1,5 +1,6 @@
 import { DragDropContext, Draggable, Droppable, DropResult } from "@hello-pangea/dnd";
-import { List, ListItem, useTheme } from "@mui/material";
+import { MoreVert } from "@mui/icons-material";
+import { IconButton, List, ListItem, Stack, useTheme } from "@mui/material";
 import { memo, useEffect, useState } from "react";
 import { updatePicklistOrder } from "../../model/picklist/picklist.Manager";
 import { Picklist, Team, TeamCategory } from "../../model/picklist/picklist.Model";
@@ -13,6 +14,7 @@ interface TeamListProps {
 const TeamList = memo(({ picklist }: TeamListProps) => {
 	const theme = useTheme();
 	const [teamList, setTeamList] = useState<Team[]>([]);
+	const [teamInEdit, setTeamInEdit] = useState<string>("");
 
 	useEffect(() => {
 		const addDividers = (teams: Team[]): Team[] => {
@@ -49,7 +51,7 @@ const TeamList = memo(({ picklist }: TeamListProps) => {
 			return result;
 		};
 		setTeamList(addDividers(picklist.teams));
-	}, [picklist.teams]);
+	}, [picklist.teams, teamInEdit]);
 
 	const moveTeam = (arr: Team[], startIndex: number, endIndex: number): Team[] => {
 		const result = [...arr];
@@ -132,10 +134,12 @@ const TeamList = memo(({ picklist }: TeamListProps) => {
 	const onDragEnd = async (result: DropResult<string>) => {
 		const startIndex = result.source.index;
 		const endIndex = result.destination?.index || result.source.index;
+
 		if (startIndex === endIndex) {
 			return;
 		}
 		if (result.draggableId.startsWith("D")) {
+			console.log("on drag end");
 			if (startIndex > endIndex) {
 				const newList = removeDividers(
 					moveDividerUpAndUpdateTeams(teamList, startIndex, endIndex),
@@ -162,8 +166,16 @@ const TeamList = memo(({ picklist }: TeamListProps) => {
 			try {
 				await updatePicklistOrder(picklist.id, newList);
 			} catch (error) {
-				//
+				console.log(error);
 			}
+		}
+	};
+
+	const handleEdit = (teamNumber: string) => {
+		if (teamNumber === teamInEdit) {
+			setTeamInEdit("");
+		} else {
+			setTeamInEdit(teamNumber);
 		}
 	};
 
@@ -199,7 +211,22 @@ const TeamList = memo(({ picklist }: TeamListProps) => {
 										{team.listPosition < 0 ? (
 											<TeamDivider teamCategory={team.category} />
 										) : (
-											<TeamListItem team={team} />
+											<Stack direction="row" width="100%">
+												<TeamListItem
+													team={team}
+													editMode={team.number === teamInEdit}
+												/>
+												<IconButton
+													edge="end"
+													color="inherit"
+													onClick={(e) => {
+														e.stopPropagation();
+														handleEdit(team.number);
+													}}
+												>
+													<MoreVert />
+												</IconButton>
+											</Stack>
 										)}
 									</ListItem>
 								)}
