@@ -1,4 +1,4 @@
-import { Stack } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppContext } from "../../app/AppContext";
@@ -6,13 +6,16 @@ import ASButton from "../../components/common/ASButton";
 import ASTextField from "../../components/common/ASTextField";
 import Page from "../../components/page/Page";
 import TopBar from "../../components/page/TopBar";
-import { addTeamToPicklist, loadPicklist } from "../../model/picklist/picklist.Manager";
+import { editPicklist, loadPicklist } from "../../model/picklist/picklist.Manager";
 
-const AddTeamPage: FC = () => {
+const CreateListPage: FC = () => {
 	const navigate = useNavigate();
+	const { user, alerts } = useAppContext();
+	const [name, setName] = useState<string>("");
+	const [deleteList, setDeleteList] = useState<string>("");
+
 	const {
-		lists: { activePicklistId, activePicklist, setActivePicklistId },
-		alerts,
+		lists: { activePicklist, setActivePicklistId, activePicklistId },
 	} = useAppContext();
 
 	const { id } = useParams();
@@ -27,36 +30,43 @@ const AddTeamPage: FC = () => {
 		}
 	}, [id]);
 
-	const [name, setName] = useState<string>("");
-	const [number, setNumber] = useState<string>("");
+	useEffect(() => {
+		setName(activePicklist?.name ?? "");
+	}, [activePicklist]);
 
 	const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setName(event.target.value);
 	};
 
-	const handleChangeNumber = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setNumber(event.target.value);
+	const handleChangeDelete = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setDeleteList(event.target.value);
 	};
 
 	const handleCreatePicklist = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		if (activePicklist) {
+		if (user && activePicklist) {
 			try {
-				await addTeamToPicklist(activePicklist, name, number, 0, []);
-				navigate(`/list/${id}`);
+				await editPicklist(activePicklist, name);
+				navigate(`/lists`);
 			} catch (error) {
 				console.log(error);
-				alerts.addAlert("error", "Failed to add team", 15);
-				navigate(`/list/${id}`);
+				alerts.addAlert("error", "Failed to update picklist.", 15);
+				navigate("/lists");
 			}
 		} else {
-			alerts.addAlert("error", "Picklist not found", 15);
-			navigate(-1);
+			if (!user) {
+				alerts.addAlert("error", "No user found", 15);
+			}
+			if (!activePicklist) {
+				alerts.addAlert("error", "No picklist found", 15);
+			}
+			navigate("/lists");
 		}
 	};
 
 	const handleOnClickBack = () => {
-		navigate(`/list//${id}`);
+		setActivePicklistId("");
+		navigate(`/lists`);
 	};
 
 	return (
@@ -66,27 +76,28 @@ const AddTeamPage: FC = () => {
 				<Stack spacing={3} component="form" onSubmit={handleCreatePicklist} width="300px">
 					<ASTextField
 						required
-						id="number"
-						label="Team Number"
-						type="number"
-						value={number}
-						onChange={handleChangeNumber}
-						fullWidth
-					/>
-					<ASTextField
-						required
 						id="name"
-						label="Team Name"
+						label="Picklist Name"
 						type="text"
 						value={name}
 						onChange={handleChangeName}
 						fullWidth
 					/>
-					<ASButton type="submit" text="Add Team" />
+					<Typography variant="error1">
+						Type 'delete' below to remove this picklist from your view
+					</Typography>
+					<ASTextField
+						id="delete"
+						type="text"
+						value={deleteList}
+						onChange={handleChangeDelete}
+						fullWidth
+					/>
+					<ASButton type="submit" text="Update picklist" />
 				</Stack>
 			</Stack>
 		</Page>
 	);
 };
 
-export default AddTeamPage;
+export default CreateListPage;

@@ -10,6 +10,7 @@ import TermsPage from "../routes/general/TermsPage";
 import AddTeamPage from "../routes/list/AddTeamPage";
 import AddUserPage from "../routes/list/AddUserPage";
 import AlliancesPage from "../routes/list/AlliancesPage";
+import EditListPage from "../routes/list/EditListPage";
 import ListPage from "../routes/list/ListPage";
 import SelectionPage from "../routes/list/SelectionPage";
 import SharePage from "../routes/list/SharePage";
@@ -63,6 +64,7 @@ function App() {
 						<Route path="/lists" element={<ListsPage />} />
 						<Route path="/newlist" element={<NewListPage />} />
 						<Route path="/list/:id/*" element={<ListPage />} />
+						<Route path="/editlist/:id/*" element={<EditListPage />} />
 						<Route path="/selection/:id/*" element={<SelectionPage />} />
 						<Route path="/alliances/:id/*" element={<AlliancesPage />} />
 						<Route path="/share/:id/*" element={<SharePage />} />

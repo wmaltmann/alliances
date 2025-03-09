@@ -34,6 +34,13 @@ export const createPicklist = async (userId: string, userEmail: string, picklist
 	return plid;
 };
 
+export const editPicklist = async (activePicklist: Picklist, picklistName: string) => {
+	const newPicklist = {
+		name: picklistName,
+	};
+	await updateFbDb(`/picklists/${activePicklist.id}`, newPicklist);
+};
+
 const addPicklistToUser = async (userId: string, picklistId: string) => {
 	const userPicklistData = { [picklistId]: true };
 	await updateFbDb(`/users/${userId}/picklists`, userPicklistData);
@@ -164,6 +171,7 @@ const convertFbDBTeamsToTeams = (fbDBTeams: { [key: string]: FbDbTeam }): Team[]
 		category: team.category,
 		listPosition: team.listPosition,
 		rank: team.rank,
+		tags: team.tags,
 	}));
 };
 
@@ -174,6 +182,7 @@ const convertTeamsToFbDBTeams = (teams: Team[]): { [key: string]: FbDbTeam } => 
 			category: team.category,
 			listPosition: team.listPosition,
 			rank: team.rank,
+			tags: team.tags,
 		};
 		return acc;
 	}, {});
@@ -188,13 +197,14 @@ export const addTeamToPicklist = async (
 	teamName: string,
 	teamNumber: string,
 	rank: number,
+	tags: string[],
 ) => {
-	const newTeam: Team = {
-		number: teamNumber,
+	const newTeam: FbDbTeam = {
 		name: teamName,
 		listPosition: activePicklist.teams.length + 1,
 		category: "unassigned",
 		rank: rank,
+		tags: tags,
 	};
 	await updateFbDb(`/picklists/${activePicklist.id}/teams/${teamNumber}`, newTeam);
 };

@@ -39,6 +39,7 @@ const TeamList = memo(({ picklist }: TeamListProps) => {
 					category: category,
 					listPosition: -1,
 					rank: -1,
+					tags: [],
 				});
 				if (teamsByCategory[category]) {
 					result.push(...teamsByCategory[category]!);

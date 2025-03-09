@@ -19,6 +19,7 @@ export interface Team {
 	category: TeamCategory;
 	listPosition: number;
 	rank: number;
+	tags: string[];
 }
 
 export interface FbDbPicklist {
@@ -39,6 +40,7 @@ export interface FbDbTeam {
 	category: TeamCategory;
 	listPosition: number;
 	rank: number;
+	tags: string[];
 }
 
 export type TeamCategory = "pick" | "neutral" | "doNotPick" | "unassigned" | "available" | "locked";

@@ -9,6 +9,7 @@ interface TeamListItemProps {
 
 const TeamListItem: React.FC<TeamListItemProps> = ({ team }) => {
 	const theme = useTheme();
+	console.log(team.tags);
 	return (
 		<Stack direction="row" alignItems="center" spacing={theme.spacing(2)}>
 			<TeamChip text={team.listPosition.toString()} teamCategory={team.category} />
