@@ -1,9 +1,10 @@
-import { Stack, Typography } from "@mui/material";
+import { Stack } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppContext } from "../../app/AppContext";
 import ASButton from "../../components/common/ASButton";
 import ASTextField from "../../components/common/ASTextField";
+import TagList from "../../components/common/TagList";
 import Page from "../../components/page/Page";
 import TopBar from "../../components/page/TopBar";
 import { editPicklist, loadPicklist } from "../../model/picklist/picklist.Manager";
@@ -12,7 +13,6 @@ const CreateListPage: FC = () => {
 	const navigate = useNavigate();
 	const { user, alerts } = useAppContext();
 	const [name, setName] = useState<string>("");
-	const [deleteList, setDeleteList] = useState<string>("");
 
 	const {
 		lists: { activePicklist, setActivePicklistId, activePicklistId },
@@ -36,10 +36,6 @@ const CreateListPage: FC = () => {
 
 	const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setName(event.target.value);
-	};
-
-	const handleChangeDelete = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setDeleteList(event.target.value);
 	};
 
 	const handleCreatePicklist = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -72,7 +68,13 @@ const CreateListPage: FC = () => {
 	return (
 		<Page>
 			<TopBar onClickBack={handleOnClickBack} />
-			<Stack height="100%" alignItems="center" justifyContent="center" paddingTop="60px">
+			<Stack
+				height="100%"
+				alignItems="center"
+				justifyContent="center"
+				paddingTop="60px"
+				spacing={6}
+			>
 				<Stack spacing={3} component="form" onSubmit={handleCreatePicklist} width="300px">
 					<ASTextField
 						required
@@ -83,17 +85,11 @@ const CreateListPage: FC = () => {
 						onChange={handleChangeName}
 						fullWidth
 					/>
-					<Typography variant="error1">
-						Type 'delete' below to remove this picklist from your view
-					</Typography>
-					<ASTextField
-						id="delete"
-						type="text"
-						value={deleteList}
-						onChange={handleChangeDelete}
-						fullWidth
-					/>
-					<ASButton type="submit" text="Update picklist" />
+
+					<ASButton type="submit" text="Update picklist name" />
+				</Stack>
+				<Stack spacing={3} width="300px">
+					<TagList tags={activePicklist?.tags ?? []} editable />
 				</Stack>
 			</Stack>
 		</Page>

@@ -1,4 +1,4 @@
-import { Edit } from "@mui/icons-material";
+import { MoreVert } from "@mui/icons-material";
 import { IconButton, List, ListItem, Typography, useTheme } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
@@ -39,13 +39,13 @@ const EventList: React.FC<PicklistsProps> = ({ picklists }) => {
 						<Typography>{picklist.name}</Typography>
 						<IconButton
 							edge="end"
-							color="primary"
+							color="inherit"
 							onClick={(e) => {
 								e.stopPropagation();
 								handleEdit(picklist.id);
 							}}
 						>
-							<Edit />
+							<MoreVert />
 						</IconButton>
 					</ListItem>
 				))}
