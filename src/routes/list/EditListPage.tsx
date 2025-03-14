@@ -7,7 +7,7 @@ import ASTextField from "../../components/common/ASTextField";
 import TagList from "../../components/common/TagList";
 import Page from "../../components/page/Page";
 import TopBar from "../../components/page/TopBar";
-import { editPicklist, loadPicklist } from "../../model/picklist/picklist.Manager";
+import { editPicklistName, loadPicklist } from "../../model/picklist/picklist.Manager";
 
 const CreateListPage: FC = () => {
 	const navigate = useNavigate();
@@ -38,16 +38,14 @@ const CreateListPage: FC = () => {
 		setName(event.target.value);
 	};
 
-	const handleCreatePicklist = async (event: React.FormEvent<HTMLFormElement>) => {
+	const handleEditPicklist = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		if (user && activePicklist) {
 			try {
-				await editPicklist(activePicklist, name);
-				navigate(`/lists`);
+				await editPicklistName(activePicklist, name);
 			} catch (error) {
 				console.log(error);
 				alerts.addAlert("error", "Failed to update picklist.", 15);
-				navigate("/lists");
 			}
 		} else {
 			if (!user) {
@@ -56,7 +54,6 @@ const CreateListPage: FC = () => {
 			if (!activePicklist) {
 				alerts.addAlert("error", "No picklist found", 15);
 			}
-			navigate("/lists");
 		}
 	};
 
@@ -75,7 +72,7 @@ const CreateListPage: FC = () => {
 				paddingTop="60px"
 				spacing={6}
 			>
-				<Stack spacing={3} component="form" onSubmit={handleCreatePicklist} width="300px">
+				<Stack spacing={3} component="form" onSubmit={handleEditPicklist} width="300px">
 					<ASTextField
 						required
 						id="name"

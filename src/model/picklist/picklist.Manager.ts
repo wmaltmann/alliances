@@ -34,9 +34,16 @@ export const createPicklist = async (userId: string, userEmail: string, picklist
 	return plid;
 };
 
-export const editPicklist = async (activePicklist: Picklist, picklistName: string) => {
+export const editPicklistName = async (activePicklist: Picklist, picklistName: string) => {
 	const newPicklist = {
 		name: picklistName,
+	};
+	await updateFbDb(`/picklists/${activePicklist.id}`, newPicklist);
+};
+
+export const editPicklistTags = async (activePicklist: Picklist, picklistTags: string[]) => {
+	const newPicklist = {
+		tags: picklistTags,
 	};
 	await updateFbDb(`/picklists/${activePicklist.id}`, newPicklist);
 };

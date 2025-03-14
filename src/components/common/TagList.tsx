@@ -1,5 +1,7 @@
 import { Box, Grid, Stack, Typography, useTheme } from "@mui/material";
 import { FC, useState } from "react";
+import { useAppContext } from "../../app/AppContext";
+import { editPicklistTags } from "../../model/picklist/picklist.Manager";
 import ASButton from "./ASButton";
 import ASTextField from "./ASTextField";
 import TagChip from "./TagChip";
@@ -11,14 +13,58 @@ interface TagListProps {
 
 const TagList: FC<TagListProps> = ({ tags, editable }) => {
 	const theme = useTheme();
+	const { user, alerts } = useAppContext();
 	const [newTag, setNewTag] = useState<string>("");
+	const {
+		lists: { activePicklist },
+	} = useAppContext();
 
 	const handleAddTag = async () => {
-		console.log("add tag submit");
+		if (user && activePicklist) {
+			try {
+				if (tags.includes(newTag)) {
+					alerts.addAlert("warning", "Tag already exists.", 15);
+				} else if (newTag !== "") {
+					const newTags = tags.concat(newTag);
+					await editPicklistTags(activePicklist, newTags);
+				}
+				setNewTag("");
+			} catch (error) {
+				console.log(error);
+				alerts.addAlert("error", "Failed to add tag.", 15);
+			}
+		} else {
+			if (!user) {
+				alerts.addAlert("error", "No user found", 15);
+			}
+			if (!activePicklist) {
+				alerts.addAlert("error", "No picklist found", 15);
+			}
+		}
 	};
 
 	const handleChangeNewTag = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setNewTag(event.target.value);
+	};
+
+	const handleTagDelete = async (oldTag: string) => {
+		if (user && activePicklist) {
+			try {
+				const newTags = tags.filter((tag) => tag !== oldTag);
+				await editPicklistTags(activePicklist, newTags);
+				setNewTag("");
+			} catch (error) {
+				console.log(error);
+				alerts.addAlert("error", "Failed to add tag.", 15);
+			}
+		} else {
+			if (!user) {
+				alerts.addAlert("error", "No user found", 15);
+			}
+			if (!activePicklist) {
+				alerts.addAlert("error", "No picklist found", 15);
+			}
+		}
 	};
 
 	return (
@@ -47,7 +93,13 @@ const TagList: FC<TagListProps> = ({ tags, editable }) => {
 				{tags.map((tag, index) => {
 					return (
 						<Grid item key={index}>
-							<TagChip text={tag} enableHold={editable} />
+							<TagChip
+								text={tag}
+								enableHold={editable}
+								onHold={() => {
+									void handleTagDelete(tag);
+								}}
+							/>
 						</Grid>
 					);
 				})}

@@ -46,8 +46,8 @@ const TeamListItem: React.FC<TeamListItemProps> = ({ team, editMode = false }) =
 					<Stack direction="row" alignItems="center">
 						{team.tags && (
 							<>
-								{team.tags.map((tag) => {
-									return <Typography key={tag}>{tag}</Typography>;
+								{team.tags.map((tag, index) => {
+									return <Typography key={index}>{tag}</Typography>;
 								})}
 							</>
 						)}
