@@ -145,7 +145,7 @@ const TeamListItem: React.FC<TeamListItemProps> = ({ team, editMode = false }) =
 							label="Rank:"
 							onSave={handleSaveTeamRank}
 						/>
-						<TagSelectionList team={team} />
+						<TagSelectionList team={team} listTags={activePicklist?.tags ?? []} />
 						<Box
 							padding={theme.spacing(2)}
 							display="flex"

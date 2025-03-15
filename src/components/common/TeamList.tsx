@@ -51,6 +51,9 @@ const TeamList = memo(({ picklist }: TeamListProps) => {
 			return result;
 		};
 		setTeamList(addDividers(picklist.teams));
+		if (!picklist.teams.find((team) => team.number === teamInEdit)) {
+			setTeamInEdit("");
+		}
 	}, [picklist.teams, teamInEdit]);
 
 	const moveTeam = (arr: Team[], startIndex: number, endIndex: number): Team[] => {

@@ -179,7 +179,7 @@ const convertFbDBTeamsToTeams = (fbDBTeams: { [key: string]: FbDbTeam }): Team[]
 		category: team.category,
 		listPosition: team.listPosition,
 		rank: team.rank,
-		tags: team.tags,
+		tags: team.tags ?? [],
 	}));
 };
 
@@ -237,6 +237,17 @@ export const editTeamRank = async (
 		rank: teamRank,
 	};
 	await updateFbDb(`/picklists/${activePicklist.id}/teams/${teamNumber}`, team);
+};
+
+export const updateTeamTags = async (
+	activePicklist: Picklist,
+	teamNumber: string,
+	teamTags: string[],
+) => {
+	const newTags = {
+		tags: teamTags,
+	};
+	await updateFbDb(`/picklists/${activePicklist.id}/teams/${teamNumber}/`, newTags);
 };
 
 export const editTeamNumber = async (
