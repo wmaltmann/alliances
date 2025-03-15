@@ -1,4 +1,5 @@
-import { List, ListItem, Typography, useTheme } from "@mui/material";
+import { MoreVert } from "@mui/icons-material";
+import { IconButton, List, ListItem, Typography, useTheme } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { PicklistCore } from "../../model/picklist/picklist.Model";
@@ -13,6 +14,10 @@ const EventList: React.FC<PicklistsProps> = ({ picklists }) => {
 
 	const handleItemClick = (id: string) => {
 		navigate(`/list/${id}`);
+	};
+
+	const handleEdit = (id: string) => {
+		navigate(`/editlist/${id}`);
 	};
 
 	return (
@@ -32,16 +37,16 @@ const EventList: React.FC<PicklistsProps> = ({ picklists }) => {
 						}}
 					>
 						<Typography>{picklist.name}</Typography>
-						{/**<IconButton
+						<IconButton
 							edge="end"
-							color="error"
+							color="inherit"
 							onClick={(e) => {
 								e.stopPropagation();
-								handleDelete(picklist.id);
+								handleEdit(picklist.id);
 							}}
 						>
-							<DeleteIcon />
-						</IconButton>**/}
+							<MoreVert />
+						</IconButton>
 					</ListItem>
 				))}
 			</List>
