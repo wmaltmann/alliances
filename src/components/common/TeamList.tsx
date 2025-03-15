@@ -189,6 +189,7 @@ const TeamList = memo(({ picklist }: TeamListProps) => {
 								key={team.number}
 								draggableId={String(team.number)}
 								index={index}
+								isDragDisabled={teamInEdit !== ""}
 							>
 								{(provided, snapshot) => (
 									<ListItem

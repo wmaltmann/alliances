@@ -217,6 +217,48 @@ export const addTeamToPicklist = async (
 	await updateFbDb(`/picklists/${activePicklist.id}/teams/${teamNumber}`, newTeam);
 };
 
+export const editTeamName = async (
+	activePicklist: Picklist,
+	teamNumber: string,
+	teamName: string,
+) => {
+	const team = {
+		name: teamName,
+	};
+	await updateFbDb(`/picklists/${activePicklist.id}/teams/${teamNumber}`, team);
+};
+
+export const editTeamRank = async (
+	activePicklist: Picklist,
+	teamNumber: string,
+	teamRank: string,
+) => {
+	const team = {
+		rank: teamRank,
+	};
+	await updateFbDb(`/picklists/${activePicklist.id}/teams/${teamNumber}`, team);
+};
+
+export const editTeamNumber = async (
+	activePicklist: Picklist,
+	teamNumber: string,
+	newTeamNumber: string,
+) => {
+	const team = activePicklist.teams.find((team) => team.number === teamNumber);
+	if (team) {
+		team.number = newTeamNumber;
+		await updateFbDb(`/picklists/${activePicklist.id}/teams/${newTeamNumber}/`, team);
+		await removeFbDb(`/picklists/${activePicklist.id}/teams/${teamNumber}`);
+	}
+};
+
+export const removeTeam = async (activePicklist: Picklist, teamNumber: string) => {
+	const team = activePicklist.teams.find((team) => team.number === teamNumber);
+	if (team) {
+		await removeFbDb(`/picklists/${activePicklist.id}/teams/${teamNumber}`);
+	}
+};
+
 export const updatePicklistOrder = async (picklistId: string, newTeamOrder: Team[]) => {
 	const path = `/picklists/${picklistId}/teams`;
 	await writeFbDb(path, convertTeamsToFbDBTeams(newTeamOrder));
