@@ -42,7 +42,7 @@ const AddTeamPage: FC = () => {
 		event.preventDefault();
 		if (activePicklist) {
 			try {
-				await addTeamToPicklist(activePicklist, name, number, 0);
+				await addTeamToPicklist(activePicklist, name, number, 0, []);
 				navigate(`/list/${id}`);
 			} catch (error) {
 				console.log(error);

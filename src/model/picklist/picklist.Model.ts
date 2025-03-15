@@ -9,6 +9,7 @@ export interface Picklist extends PicklistCore {
 	owners: ID[];
 	members: ID[];
 	alliances: Alliance[];
+	tags: string[];
 }
 
 export type PicklistPermission = "member" | "owner" | "none";
@@ -19,6 +20,7 @@ export interface Team {
 	category: TeamCategory;
 	listPosition: number;
 	rank: number;
+	tags: string[];
 }
 
 export interface FbDbPicklist {
@@ -27,6 +29,7 @@ export interface FbDbPicklist {
 	owners: { [key: string]: string };
 	members: { [key: string]: string };
 	alliances: { [key: string]: FbDbAlliance };
+	tags: string[];
 }
 
 export interface ID {
@@ -39,6 +42,7 @@ export interface FbDbTeam {
 	category: TeamCategory;
 	listPosition: number;
 	rank: number;
+	tags: string[];
 }
 
 export type TeamCategory = "pick" | "neutral" | "doNotPick" | "unassigned" | "available" | "locked";

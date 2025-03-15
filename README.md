@@ -13,6 +13,11 @@ This is a Create React App. It is hosted using firebase hosting and uses github 
 - Add packages
 	`yarn add <packageName>`
 	`yarn add <packageName> --dev`
+- Create .env file
+	Copy example.env and rename it to .env
+	Set the environment to "local"
+	Add the KEY and URL for the beta firebase instance
+
 - Build & run
 	`npm run start`
 	Chrome will open http://localhost:3000
